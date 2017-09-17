@@ -1,0 +1,3 @@
+android.applicationVariants.all { variant ->
+    buildConfigField "String", "URL", '"https://salty-plateau-71086.herokuapp.com/"'
+}

@@ -1,0 +1,16 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="90dp"
+    android:viewportHeight="350.0"
+    android:viewportWidth="600.0">
+  <path
+      android:fillColor="@color/cardview_shadow_start_color"
+      android:pathData="M234.5,148.5v103h130.9v-103H234.5zM354.9,240.3H245.7v-80.7h109.2V240.3L354.9,240.3z"/>
+  <path
+      android:fillColor="@color/cardview_shadow_start_color"
+      android:pathData="M251.6,231.6l22.5,-23.7l8.4,3.6l26.6,-28.3l10.5,12.5l4.7,-2.9l25.6,38.7z"/>
+  <path
+      android:fillColor="@color/cardview_shadow_start_color"
+      android:pathData="M277.6,180.2m-9.8,0a9.8,9.8 0,1 1,19.7 0a9.8,9.8 0,1 1,-19.7 0"/>
+</vector>
