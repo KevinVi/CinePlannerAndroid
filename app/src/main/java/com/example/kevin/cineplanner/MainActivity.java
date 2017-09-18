@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.kevin.cineplanner.login.LoginActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     private final int TIME_LOADER = 2000;

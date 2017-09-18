@@ -1,14 +1,19 @@
-package com.example.kevin.cineplanner;
+package com.example.kevin.cineplanner.login;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.example.kevin.cineplanner.BuildConfig;
+import com.example.kevin.cineplanner.R;
+import com.example.kevin.cineplanner.planning.PlanningActivity;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -60,11 +65,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                     Log.d(TAG, "onResponse: " + response);
                     Log.d(TAG, "onResponse: " + response.body().getToken());
+                    if (response.isSuccessful()) {
+                        Intent intent = new Intent(getApplicationContext(), PlanningActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<LoginModel> call, Throwable t) {
                     Log.d(TAG, "onFailure: " + t.getMessage());
+                    Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
                 }
             });
         }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CinePlanner</string>
+    <string name="action_today">Today</string>
+    <string name="action_add">Add</string>
+    <string name="action_day_view">Day view</string>
+    <string name="action_three_day_view">3 day view</string>
+    <string name="action_week_view">Week view</string>
 </resources>
