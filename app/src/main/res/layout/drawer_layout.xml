@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
+    <include
+        layout="@layout/activity_planning"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--app:headerLayout="@layout/nav_header_main"-->
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/your_teams" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/no_team_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_team"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/add_team"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_team" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v4.widget.DrawerLayout>

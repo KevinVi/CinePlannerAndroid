@@ -2,10 +2,15 @@ package com.example.kevin.cineplanner.planning;
 
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alamkanak.weekview.DateTimeInterpreter;
@@ -28,12 +33,19 @@ public abstract class AbstractPlanning extends AppCompatActivity implements Week
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
+    private String[] mPlanetTitles;
+    private ListView mDrawerList;
 
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
 
+    private static final String TAG = "AbstractPlanning";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_planning);
+        setContentView(R.layout.drawer_layout);
 
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
@@ -54,6 +66,18 @@ public abstract class AbstractPlanning extends AppCompatActivity implements Week
         // Set up a date time interpreter to interpret how the date and time will be formatted in
         // the week view. This is optional.
         setupDateTimeInterpreter(false);
+
+//        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+//        mTitle = mDrawerTitle = getTitle();
+//        // Set the adapter for the list view
+//        Log.d(TAG, "onCreate: " + mDrawerList);
+//        Log.d(TAG, "onCreate: " + mDrawerLayout);
+//        Log.d(TAG, "onCreate: " + mPlanetTitles);
+//        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+//                R.layout.drawer_list_item, mPlanetTitles));
+
     }
 
 
@@ -162,4 +186,6 @@ public abstract class AbstractPlanning extends AppCompatActivity implements Week
     public WeekView getWeekView() {
         return mWeekView;
     }
+
+
 }

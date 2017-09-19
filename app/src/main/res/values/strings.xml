@@ -5,4 +5,23 @@
     <string name="action_day_view">Day view</string>
     <string name="action_three_day_view">3 day view</string>
     <string name="action_week_view">Week view</string>
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+
+    <string name="your_teams">Vos Teams</string>
+    <string name="no_team">Vous n\'avez pas encore de Team </string>
+    <string name="add_team">Créer une Team</string>
 </resources>

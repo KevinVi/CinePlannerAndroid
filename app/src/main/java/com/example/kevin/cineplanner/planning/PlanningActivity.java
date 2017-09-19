@@ -1,5 +1,16 @@
 package com.example.kevin.cineplanner.planning;
 
+import android.app.FragmentManager;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 import com.alamkanak.weekview.WeekViewEvent;
 import com.example.kevin.cineplanner.R;
 
@@ -9,6 +20,30 @@ import java.util.List;
 
 public class PlanningActivity extends AbstractPlanning {
 
+    private static final String TAG = "PlanningActivity";
+    private ListView mDrawerList;
+
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        Log.d(TAG, "onCreate: "+mDrawerLayout);
+        mTitle = mDrawerTitle = getTitle();
+        // Set the adapter for the list view
+        String[] osArray = {"Bluetooth", "Reply to Calls", "Reply to sms", "customise message"};
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_multiple_choice, osArray);
+
+        mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mDrawerList.setAdapter(arrayAdapter);
+    }
 
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
@@ -114,5 +149,24 @@ public class PlanningActivity extends AbstractPlanning {
         events.add(event);
 
         return events;
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    /** Swaps fragments in the main content view */
+    private void selectItem(int position) {
+        // Create a new fragment and specify the planet to show based on position
+
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
     }
 }
