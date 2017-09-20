@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         final String username = loginId.getText().toString();
         final String password = loginPass.getText().toString();
         if (!username.isEmpty() && !password.isEmpty()) {
-            loginBtn.setOnClickListener(null);
+
             String url = BuildConfig.URL + "account/";
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             Retrofit.Builder retrofit = new Retrofit.Builder()
@@ -66,9 +66,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.d(TAG, "onResponse: " + response);
                     Log.d(TAG, "onResponse: " + response.body().getToken());
                     if (response.isSuccessful()) {
+                        LoginTools.saveLoginInfo(getApplicationContext(),username,password);
+                        LoginTools.setToken(getApplicationContext(),response.body().getToken());
                         Intent intent = new Intent(getApplicationContext(), PlanningActivity.class);
                         startActivity(intent);
                     } else {
+                        loginBtn.setOnClickListener(LoginActivity.this);
                         Toast.makeText(LoginActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -76,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onFailure(Call<LoginModel> call, Throwable t) {
                     Log.d(TAG, "onFailure: " + t.getMessage());
+                    loginBtn.setOnClickListener(LoginActivity.this);
                     Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }

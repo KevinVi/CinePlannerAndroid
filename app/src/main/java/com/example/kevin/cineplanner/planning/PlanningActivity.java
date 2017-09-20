@@ -1,11 +1,13 @@
 package com.example.kevin.cineplanner.planning;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,7 +16,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekViewEvent;
+import com.example.kevin.cineplanner.BuildConfig;
+import com.example.kevin.cineplanner.MyDialogFragment;
 import com.example.kevin.cineplanner.R;
+import com.example.kevin.cineplanner.login.LoginActivity;
+import com.example.kevin.cineplanner.login.LoginInterface;
+import com.example.kevin.cineplanner.login.LoginModel;
+import com.example.kevin.cineplanner.login.LoginTools;
+import com.example.kevin.cineplanner.team.TeamModel;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -22,11 +31,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class PlanningActivity extends AbstractPlanning {
 
     private static final String TAG = "PlanningActivity";
-    private ListView mDrawerList;
+    public static  ListView mDrawerList;
 
+    private AppCompatButton addTeam;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
@@ -44,6 +61,7 @@ public class PlanningActivity extends AbstractPlanning {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        addTeam = (AppCompatButton) findViewById(R.id.add_team);
         Log.d(TAG, "onCreate: " + mDrawerLayout);
         mTitle = mDrawerTitle = getTitle();
         // Set the adapter for the list view
@@ -53,6 +71,7 @@ public class PlanningActivity extends AbstractPlanning {
 
         mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mDrawerList.setAdapter(arrayAdapter);
+        mDrawerList.deferNotifyDataSetChanged();
 
         menuRed = (FloatingActionMenu) findViewById(R.id.fab);
         event = (FloatingActionButton) findViewById(R.id.action_event);
@@ -89,6 +108,15 @@ public class PlanningActivity extends AbstractPlanning {
             @Override
             public void onClick(View view) {
                 Toast.makeText(PlanningActivity.this, "event", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        addTeam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MyDialogFragment dFragment = new MyDialogFragment();
+                // Show DialogFragment
+                dFragment.show(getSupportFragmentManager(),"MyDialogFragment");
             }
         });
 

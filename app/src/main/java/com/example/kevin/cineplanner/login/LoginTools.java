@@ -71,10 +71,9 @@ public class LoginTools {
      * Get token for sharedPreferences.
      *
      * @param context  need for SharedPreferences
-     * @param endpoint endpoint
      * @return token
      */
-    public static String getToken(Context context, String endpoint) {
+    public static String getToken(Context context) {
         final SharedPreferences loginPreferences = context.getSharedPreferences(PREF_LOGIN, Context.MODE_PRIVATE);
         return loginPreferences.getString(PREF_LOGIN_TOKEN, "");
     }
