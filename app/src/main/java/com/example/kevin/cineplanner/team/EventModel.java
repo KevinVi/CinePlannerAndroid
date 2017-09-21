@@ -1,15 +1,24 @@
 package com.example.kevin.cineplanner.team;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
+
+import com.alamkanak.weekview.WeekViewEvent;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Kevin on 20/09/2017 for ZKY.
  */
 
-public class EventModel {
+public class EventModel implements Serializable {
 
 
     @SerializedName("id")
@@ -34,6 +43,34 @@ public class EventModel {
     @Expose
     private ArrayList<String> postComments;
 
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public long getEnd() {
+        return end;
+    }
+
+    public ArrayList<String> getPreComments() {
+        return preComments;
+    }
+
+    public ArrayList<String> getPostComments() {
+        return postComments;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -76,5 +113,26 @@ public class EventModel {
                 ", preComments=" + preComments +
                 ", postComments=" + postComments +
                 '}';
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public WeekViewEvent toWeekViewEvent(){
+
+
+        // Initialize start and end time.
+        Calendar now = Calendar.getInstance();
+        Calendar startTime = (Calendar) now.clone();
+        startTime.setTimeInMillis(getStart());
+        Calendar endTime = (Calendar) startTime.clone();
+        endTime.setTimeInMillis(getEnd());
+
+        // Create an week view event.
+        WeekViewEvent weekViewEvent = new WeekViewEvent();
+        weekViewEvent.setName(getName());
+        weekViewEvent.setStartTime(startTime);
+        weekViewEvent.setEndTime(endTime);
+        weekViewEvent.setColor(Color.CYAN);
+
+        return weekViewEvent;
     }
 }

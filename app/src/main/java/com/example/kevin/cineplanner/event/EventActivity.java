@@ -146,7 +146,12 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                             Log.d(TAG, "onResponse: " + response);
                             if (response.isSuccessful()) {
                                 Toast.makeText(EventActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+
+                                Intent intent=new Intent();
+                                intent.putExtra("event",response.body());
+                                setResult(1,intent);
                                 finish();
+
                             } else {
                                 Toast.makeText(EventActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
                             }
@@ -160,6 +165,8 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
                 }
+
+
                 Toast.makeText(this, "Time " + nameEvent + " | " + startTime + " | " + endTime, Toast.LENGTH_SHORT).show();
                 break;
             default:

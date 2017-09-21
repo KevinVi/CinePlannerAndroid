@@ -24,6 +24,7 @@ import com.example.kevin.cineplanner.login.LoginActivity;
 import com.example.kevin.cineplanner.login.LoginInterface;
 import com.example.kevin.cineplanner.login.LoginModel;
 import com.example.kevin.cineplanner.login.LoginTools;
+import com.example.kevin.cineplanner.team.EventModel;
 import com.example.kevin.cineplanner.team.TeamModel;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -54,6 +55,7 @@ public class PlanningActivity extends AbstractPlanning {
     private FloatingActionButton event;
     private FloatingActionButton invite;
     private List<FloatingActionMenu> menus = new ArrayList<>();
+    private  List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
     private Handler mUiHandler = new Handler();
 
@@ -105,7 +107,7 @@ public class PlanningActivity extends AbstractPlanning {
             public void onClick(View view) {
                 Toast.makeText(PlanningActivity.this, "event", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EventActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
             }
         });
 
@@ -124,7 +126,6 @@ public class PlanningActivity extends AbstractPlanning {
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
         // Populate the week view with some events.
-        List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
         Calendar startTime = Calendar.getInstance();
         startTime.set(Calendar.HOUR_OF_DAY, 3);
@@ -269,4 +270,17 @@ public class PlanningActivity extends AbstractPlanning {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1)
+        {
+            if (data.hasExtra("event")) {
+                EventModel event = (EventModel) data.getSerializableExtra("event");
+                Log.d(TAG, "onActivityResult: " + event.toString());
+                this.events.add(event.toWeekViewEvent());
+                getWeekView().notifyDatasetChanged();
+            }
+        }
+    }
 }
