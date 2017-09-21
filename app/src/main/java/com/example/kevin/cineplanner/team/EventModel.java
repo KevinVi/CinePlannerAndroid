@@ -127,10 +127,7 @@ public class EventModel implements Serializable {
         endTime.setTimeInMillis(getEnd());
 
         // Create an week view event.
-        WeekViewEvent weekViewEvent = new WeekViewEvent();
-        weekViewEvent.setName(getName());
-        weekViewEvent.setStartTime(startTime);
-        weekViewEvent.setEndTime(endTime);
+        WeekViewEvent weekViewEvent = new WeekViewEvent(getId(),getName(),startTime,endTime);
         weekViewEvent.setColor(Color.CYAN);
 
         return weekViewEvent;
