@@ -19,6 +19,7 @@ import com.alamkanak.weekview.WeekViewEvent;
 import com.example.kevin.cineplanner.BuildConfig;
 import com.example.kevin.cineplanner.MyDialogFragment;
 import com.example.kevin.cineplanner.R;
+import com.example.kevin.cineplanner.event.EventActivity;
 import com.example.kevin.cineplanner.login.LoginActivity;
 import com.example.kevin.cineplanner.login.LoginInterface;
 import com.example.kevin.cineplanner.login.LoginModel;
@@ -30,6 +31,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -65,13 +67,7 @@ public class PlanningActivity extends AbstractPlanning {
         Log.d(TAG, "onCreate: " + mDrawerLayout);
         mTitle = mDrawerTitle = getTitle();
         // Set the adapter for the list view
-        String[] osArray = {"Bluetooth", "Reply to Calls", "Reply to sms", "customise message"};
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice, osArray);
-
-        mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mDrawerList.setAdapter(arrayAdapter);
-        mDrawerList.deferNotifyDataSetChanged();
+        setMenu();
 
         menuRed = (FloatingActionMenu) findViewById(R.id.fab);
         event = (FloatingActionButton) findViewById(R.id.action_event);
@@ -108,6 +104,8 @@ public class PlanningActivity extends AbstractPlanning {
             @Override
             public void onClick(View view) {
                 Toast.makeText(PlanningActivity.this, "event", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), EventActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -229,24 +227,46 @@ public class PlanningActivity extends AbstractPlanning {
         return events;
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
+
+    private void setMenu(){
+        String url = BuildConfig.URL ;
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.connectTimeout(90, TimeUnit.SECONDS).readTimeout(90, TimeUnit.SECONDS).writeTimeout(90, TimeUnit.SECONDS);
+        Retrofit.Builder retrofit = new Retrofit.Builder()
+                .client(builder.build())
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create());
+        EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+        Call<List<TeamModel>> call = endpointInterface.getTeams(LoginTools.getToken(getApplicationContext()));
+        call.enqueue(new Callback<List<TeamModel>>() {
+            @Override
+            public void onResponse(Call<List<TeamModel>> call, Response<List<TeamModel>> response) {
+                Log.d(TAG, "onResponse: " + response);
+                Log.d(TAG, "onResponse: " + response.body().toString());
+                if (response.isSuccessful()) {
+
+                    List<String> teamNames = new ArrayList<>();
+                    for (TeamModel t :
+                            response.body()) {
+                        teamNames.add(t.getName());
+                    }
+                    ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(),
+                            android.R.layout.simple_list_item_multiple_choice, teamNames);
+
+                    mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                    mDrawerList.setAdapter(arrayAdapter);
+
+                } else {
+                    Log.d(TAG, "onResponse: " + response.raw());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<TeamModel>> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+            }
+        });
     }
 
-    /**
-     * Swaps fragments in the main content view
-     */
-    private void selectItem(int position) {
-        // Create a new fragment and specify the planet to show based on position
 
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getActionBar().setTitle(mTitle);
-    }
 }

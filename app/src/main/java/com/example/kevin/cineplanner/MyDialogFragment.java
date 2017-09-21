@@ -81,11 +81,7 @@ public class MyDialogFragment extends DialogFragment {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
                                         List<String> array = new ArrayList<>();
-                                        array.add("Bluetooth");
-                                        array.add("Reply to Calls");
-                                        array.add("Reply to sms");
                                         array.add(teamName);
-                                        String[] osArray = {"Bluetooth", "Reply to Calls", "Reply to sms", "customise message",teamName};
 
                                         Log.d(TAG, "onResponse: " +context );
                                         ArrayAdapter arrayAdapter = new ArrayAdapter<>(context,

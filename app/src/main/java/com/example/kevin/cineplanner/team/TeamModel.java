@@ -25,7 +25,27 @@ public class TeamModel {
     private ArrayList<String> pendingUsers;
     @SerializedName("events")
     @Expose
-    private long events;
+    private ArrayList<EventModel> events;
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public ArrayList<String> getPendingUsers() {
+        return pendingUsers;
+    }
+
+    public ArrayList<EventModel> getEvents() {
+        return events;
+    }
 
     @Override
     public String toString() {
@@ -46,21 +66,13 @@ public class TeamModel {
         TeamModel teamModel = (TeamModel) o;
 
         if (id != teamModel.id) return false;
-        if (events != teamModel.events) return false;
         if (name != null ? !name.equals(teamModel.name) : teamModel.name != null) return false;
         if (creator != null ? !creator.equals(teamModel.creator) : teamModel.creator != null)
             return false;
-        return pendingUsers != null ? pendingUsers.equals(teamModel.pendingUsers) : teamModel.pendingUsers == null;
+        if (pendingUsers != null ? !pendingUsers.equals(teamModel.pendingUsers) : teamModel.pendingUsers != null)
+            return false;
+        return events != null ? events.equals(teamModel.events) : teamModel.events == null;
 
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (creator != null ? creator.hashCode() : 0);
-        result = 31 * result + (pendingUsers != null ? pendingUsers.hashCode() : 0);
-        result = 31 * result + (int) (events ^ (events >>> 32));
-        return result;
-    }
 }
