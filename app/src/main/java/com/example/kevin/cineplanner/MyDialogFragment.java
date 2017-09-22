@@ -43,7 +43,6 @@ public class MyDialogFragment extends DialogFragment {
     private static final String TAG = "MyDialogFragment";
 
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -83,7 +82,7 @@ public class MyDialogFragment extends DialogFragment {
                                         List<String> array = new ArrayList<>();
                                         array.add(teamName);
 
-                                        Log.d(TAG, "onResponse: " +context );
+                                        Log.d(TAG, "onResponse: " + context);
                                         ArrayAdapter arrayAdapter = new ArrayAdapter<>(context,
                                                 android.R.layout.simple_list_item_multiple_choice, array);
 
@@ -91,7 +90,7 @@ public class MyDialogFragment extends DialogFragment {
                                         mDrawerList.deferNotifyDataSetChanged();
 
                                     } else {
-                                        Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "onResponse: " + response.raw());
                                     }
                                 }
 
