@@ -25,6 +25,7 @@ import com.example.kevin.cineplanner.login.LoginTools;
 import com.example.kevin.cineplanner.planning.EndpointInterface;
 import com.example.kevin.cineplanner.planning.PlanningActivity;
 import com.example.kevin.cineplanner.team.EventModel;
+import com.example.kevin.cineplanner.util.NetworkUtils;
 import com.google.gson.JsonObject;
 
 import java.util.Calendar;
@@ -133,9 +134,8 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                     jsonObject.addProperty("idTeam", 2);
 
                     String url = BuildConfig.URL;
-                    OkHttpClient.Builder builder = new OkHttpClient.Builder();
                     Retrofit.Builder retrofit = new Retrofit.Builder()
-                            .client(builder.build())
+                            .client(NetworkUtils.client(getApplicationContext(),"event"))
                             .baseUrl(url)
                             .addConverterFactory(GsonConverterFactory.create());
                     EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);

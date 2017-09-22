@@ -26,6 +26,7 @@ import com.example.kevin.cineplanner.login.LoginModel;
 import com.example.kevin.cineplanner.login.LoginTools;
 import com.example.kevin.cineplanner.team.EventModel;
 import com.example.kevin.cineplanner.team.TeamModel;
+import com.example.kevin.cineplanner.util.NetworkUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -130,10 +131,8 @@ public class PlanningActivity extends AbstractPlanning {
 
     private void setMenu() {
         String url = BuildConfig.URL;
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(90, TimeUnit.SECONDS).readTimeout(90, TimeUnit.SECONDS).writeTimeout(90, TimeUnit.SECONDS);
         Retrofit.Builder retrofit = new Retrofit.Builder()
-                .client(builder.build())
+                .client(NetworkUtils.client(getApplicationContext(),"teams"))
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create());
         EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
