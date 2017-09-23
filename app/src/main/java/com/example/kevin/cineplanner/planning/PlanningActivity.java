@@ -42,6 +42,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.kevin.cineplanner.event.EventActivity.DAY;
+import static com.example.kevin.cineplanner.event.EventActivity.MONTH;
+import static com.example.kevin.cineplanner.event.EventActivity.TEAM;
+import static com.example.kevin.cineplanner.event.EventActivity.YEAR;
+
 public class PlanningActivity extends AbstractPlanning {
 
     private static final String TAG = "PlanningActivity";
@@ -59,6 +64,7 @@ public class PlanningActivity extends AbstractPlanning {
     private List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
     private int newYear;
     private int newMonth;
+    private List<Long> teamIds = new ArrayList<>();
 
     private Handler mUiHandler = new Handler();
 
@@ -102,15 +108,25 @@ public class PlanningActivity extends AbstractPlanning {
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Toast.makeText(PlanningActivity.this, "invite", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
             }
         });
         event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(PlanningActivity.this, "event", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), EventActivity.class);
-                startActivityForResult(intent, 1);
+                if (mDrawerList.getCheckedItemPosition() >= 0) {
+                    Toast.makeText(PlanningActivity.this, "event" + getWeekView().getFirstVisibleDay().get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), EventActivity.class);
+                    intent.putExtra(MONTH, getWeekView().getFirstVisibleDay().get(Calendar.MONTH));
+                    intent.putExtra(DAY, getWeekView().getFirstVisibleDay().get(Calendar.DAY_OF_MONTH));
+                    intent.putExtra(YEAR, getWeekView().getFirstVisibleDay().get(Calendar.YEAR));
+                    intent.putExtra(TEAM, teamIds.get(mDrawerList.getCheckedItemPosition()));
+                    startActivityForResult(intent, 1);
+                } else {
+                    Toast.makeText(PlanningActivity.this, "Sélectionnez une taem", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -123,16 +139,38 @@ public class PlanningActivity extends AbstractPlanning {
             }
         });
 
+
+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
+
     }
-
-
-
 
 
     private void setMenu() {
         String url = BuildConfig.URL;
         Retrofit.Builder retrofit = new Retrofit.Builder()
-                .client(NetworkUtils.client(getApplicationContext(),"teams"))
+                .client(NetworkUtils.client(getApplicationContext(), "teams"))
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create());
         EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
@@ -148,12 +186,17 @@ public class PlanningActivity extends AbstractPlanning {
                     for (TeamModel t :
                             response.body()) {
                         teamNames.add(t.getName());
+                        teamIds.add(t.getId());
                     }
                     ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(),
                             android.R.layout.simple_list_item_multiple_choice, teamNames);
 
                     mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
                     mDrawerList.setAdapter(arrayAdapter);
+                    if (LoginTools.getSelectedTeam(getApplicationContext()) >= 0) {
+                        mDrawerList.setItemChecked(LoginTools.getSelectedTeam(getApplicationContext()), true);
+                    }
 
                     if (!response.body().isEmpty()) {
                         for (EventModel ev :
@@ -163,7 +206,7 @@ public class PlanningActivity extends AbstractPlanning {
                             events.add(ev.toWeekViewEvent());
                         }
 
-                         getWeekView().notifyDatasetChanged();
+                        getWeekView().notifyDatasetChanged();
                     }
                 } else {
                     Log.d(TAG, "onResponse: " + response.raw());
@@ -182,24 +225,26 @@ public class PlanningActivity extends AbstractPlanning {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if (data.hasExtra("event")) {
-                EventModel event = (EventModel) data.getSerializableExtra("event");
-                Log.d(TAG, "onActivityResult: " + event.toString());
-                this.events.add(event.toWeekViewEvent());
-                Calendar startTime = Calendar.getInstance();
-                startTime.set(Calendar.HOUR_OF_DAY, 3);
-                startTime.set(Calendar.MINUTE, 0);
-                startTime.set(Calendar.MONTH, newMonth - 1);
-                startTime.set(Calendar.YEAR, newYear);
-                Calendar endTime = (Calendar) startTime.clone();
-                endTime.add(Calendar.HOUR, 1);
-                endTime.set(Calendar.MONTH, newMonth - 1);
-                WeekViewEvent event2 = new WeekViewEvent(100, getEventTitle(startTime), startTime, endTime);
-                event2.setColor(getResources().getColor(R.color.event_color_01));
-                this.events.add(event2);
-                Log.d(TAG, "onActivityResult:events " + events);
-                getWeekView().notifyDatasetChanged();
+            if (data != null) {
+                if (data.hasExtra("event")) {
+                    EventModel event = (EventModel) data.getSerializableExtra("event");
+                    Log.d(TAG, "onActivityResult: " + event.toString());
+                    this.events.add(event.toWeekViewEvent());
+                    Calendar startTime = Calendar.getInstance();
+                    startTime.set(Calendar.HOUR_OF_DAY, 3);
+                    startTime.set(Calendar.MINUTE, 0);
+                    startTime.set(Calendar.MONTH, newMonth - 1);
+                    startTime.set(Calendar.YEAR, newYear);
+                    Calendar endTime = (Calendar) startTime.clone();
+                    endTime.add(Calendar.HOUR, 1);
+                    endTime.set(Calendar.MONTH, newMonth - 1);
+                    WeekViewEvent event2 = new WeekViewEvent(100, getEventTitle(startTime), startTime, endTime);
+                    event2.setColor(getResources().getColor(R.color.event_color_01));
+                    this.events.add(event2);
+                    Log.d(TAG, "onActivityResult:events " + events);
+                    getWeekView().notifyDatasetChanged();
 
+                }
             }
         }
     }
@@ -215,6 +260,7 @@ public class PlanningActivity extends AbstractPlanning {
         return matchedEvents;
 
     }
+
     private boolean eventMatches(WeekViewEvent event, int year, int month) {
         return (event.getStartTime().get(Calendar.YEAR) == year && event.getStartTime().get(Calendar.MONTH) == month - 1) || (event.getEndTime().get(Calendar.YEAR) == year && event.getEndTime().get(Calendar.MONTH) == month - 1);
     }
