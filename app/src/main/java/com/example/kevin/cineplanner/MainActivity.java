@@ -12,6 +12,7 @@ import com.example.kevin.cineplanner.login.LoginInterface;
 import com.example.kevin.cineplanner.login.LoginModel;
 import com.example.kevin.cineplanner.login.LoginTools;
 import com.example.kevin.cineplanner.planning.PlanningActivity;
+import com.example.kevin.cineplanner.util.NetworkUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private final int TIME_LOADER = 2000;
     private final int TIME_LOADER_FAIL = 5000;
     private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,40 +44,49 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }, TIME_LOADER);
-        }else {
+        } else {
 
-            String url = BuildConfig.URL + "account/";
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.connectTimeout(90, TimeUnit.SECONDS).readTimeout(90, TimeUnit.SECONDS).writeTimeout(90, TimeUnit.SECONDS);
-            Retrofit.Builder retrofit = new Retrofit.Builder()
-                    .client(builder.build())
-                    .baseUrl(url)
-                    .addConverterFactory(GsonConverterFactory.create());
-            LoginInterface postInterface = retrofit.build().create(LoginInterface.class);
-            Call<LoginModel> call = postInterface.getLogin(LoginTools.getLogin(getApplicationContext()), LoginTools.getPass(getApplicationContext()));
-            call.enqueue(new Callback<LoginModel>() {
-                @Override
-                public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                    Log.d(TAG, "onResponse: " + response);
-                    Log.d(TAG, "onResponse: " + response.body().getToken());
-                    if (response.isSuccessful()) {
-                        LoginTools.setToken(getApplicationContext(),response.body().getToken());
-                        Intent intent = new Intent(getApplicationContext(), PlanningActivity.class);
-                        startActivity(intent);
-                    } else {
+            if (!NetworkUtils.isOnline(getApplicationContext())) {
+
+                if (!LoginTools.getToken(getApplicationContext()).isEmpty()) {
+                    Intent intent = new Intent(getApplicationContext(), PlanningActivity.class);
+                    startActivity(intent);
+                }
+            } else {
+
+                String url = BuildConfig.URL + "account/";
+                OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                builder.connectTimeout(90, TimeUnit.SECONDS).readTimeout(90, TimeUnit.SECONDS).writeTimeout(90, TimeUnit.SECONDS);
+                Retrofit.Builder retrofit = new Retrofit.Builder()
+                        .client(builder.build())
+                        .baseUrl(url)
+                        .addConverterFactory(GsonConverterFactory.create());
+                LoginInterface postInterface = retrofit.build().create(LoginInterface.class);
+                Call<LoginModel> call = postInterface.getLogin(LoginTools.getLogin(getApplicationContext()), LoginTools.getPass(getApplicationContext()));
+                call.enqueue(new Callback<LoginModel>() {
+                    @Override
+                    public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                        Log.d(TAG, "onResponse: " + response);
+                        Log.d(TAG, "onResponse: " + response.body().getToken());
+                        if (response.isSuccessful()) {
+                            LoginTools.setToken(getApplicationContext(), response.body().getToken());
+                            Intent intent = new Intent(getApplicationContext(), PlanningActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginModel> call, Throwable t) {
                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
-                }
-
-                @Override
-                public void onFailure(Call<LoginModel> call, Throwable t) {
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-            });
+                });
+            }
         }
     }
 }

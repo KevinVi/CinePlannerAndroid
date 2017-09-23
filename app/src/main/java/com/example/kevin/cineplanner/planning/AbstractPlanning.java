@@ -27,7 +27,7 @@ import java.util.Locale;
  * Created by Kevin on 18/09/2017 for ZKY.
  */
 
-public abstract class AbstractPlanning extends AppCompatActivity implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
+public abstract class AbstractPlanning extends AppCompatActivity implements MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
@@ -49,10 +49,16 @@ public abstract class AbstractPlanning extends AppCompatActivity implements Week
 
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
-
-        // Show a toast message about the touched event.
-        mWeekView.setOnEventClickListener(this);
-
+        mWeekView.post(new Runnable() {
+            @Override
+            public void run() {
+                int height = mWeekView.getHeight();
+                int textSize = mWeekView.getTextSize();
+                int padding = mWeekView.getHeaderRowPadding();
+                height = height - textSize - (2 * padding);
+                mWeekView.setHourHeight(height / 24);
+            }
+        });
         // The week view has infinite scrolling horizontally. We have to provide the events of a
         // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(this);
@@ -80,6 +86,9 @@ public abstract class AbstractPlanning extends AppCompatActivity implements Week
 
     }
 
+    public WeekView getmWeekView() {
+        return mWeekView;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,20 +177,6 @@ public abstract class AbstractPlanning extends AppCompatActivity implements Week
         return String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.MONTH)+1, time.get(Calendar.DAY_OF_MONTH));
     }
 
-    @Override
-    public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(this, "Clicked " + event.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(this, "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onEmptyViewLongPress(Calendar time) {
-        Toast.makeText(this, "Empty view long pressed: " + getEventTitle(time), Toast.LENGTH_SHORT).show();
-    }
 
     public WeekView getWeekView() {
         return mWeekView;

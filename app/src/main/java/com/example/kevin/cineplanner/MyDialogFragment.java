@@ -65,7 +65,7 @@ public class MyDialogFragment extends DialogFragment {
 
 
                             Log.d(TAG, "onClick: " + jsonObject);
-                            String url = BuildConfig.URL;
+                            String url = BuildConfig.URL+"team/";
                             OkHttpClient.Builder builder = new OkHttpClient.Builder();
                             final Context context = getContext();
                             Retrofit.Builder retrofit = new Retrofit.Builder()

@@ -11,20 +11,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
 import com.example.kevin.cineplanner.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InviteActivity extends AppCompatActivity {
 
 
     AppCompatAutoCompleteTextView textIn;
     AppCompatButton add;
+    AppCompatButton envoyer;
 
+    List<String> invit = new ArrayList<>();
     LinearLayoutCompat container;
 
-    private static final String[] NUMBER = new String[]{
-
-    };
+    private static final String[] NUMBER = new String[]{};
     ArrayAdapter<String> adapter;
 
     @Override
@@ -39,6 +43,7 @@ public class InviteActivity extends AppCompatActivity {
         textIn.setAdapter(adapter);
         container = (LinearLayoutCompat) findViewById(R.id.container);
         add = (AppCompatButton) findViewById(R.id.add);
+        envoyer = (AppCompatButton) findViewById(R.id.envoyer);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,13 +53,17 @@ public class InviteActivity extends AppCompatActivity {
                 final View addView = layoutInflater.inflate(R.layout.row_invite, null);
                 AutoCompleteTextView textOut = addView.findViewById(R.id.textAdded);
                 textOut.setAdapter(adapter);
+                final String nameInvite = textIn.getText().toString();
                 textOut.setText(textIn.getText().toString());
+                textIn.setText("");
+                invit.add(nameInvite);
                 AppCompatButton buttonRemove = addView.findViewById(R.id.remove);
 
                 final View.OnClickListener thisListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ((LinearLayoutCompat) addView.getParent()).removeView(addView);
+                        invit.remove(nameInvite);
                     }
                 };
 
@@ -62,6 +71,12 @@ public class InviteActivity extends AppCompatActivity {
                 container.addView(addView);
 
 
+            }
+        });
+        envoyer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(InviteActivity.this, invit.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

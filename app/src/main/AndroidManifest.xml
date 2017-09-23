@@ -23,7 +23,8 @@
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".planning.PlanningActivity" />
         <activity android:name=".event.EventActivity" />
-        <activity android:name=".invite.InviteActivity"></activity>
+        <activity android:name=".invite.InviteActivity" />
+        <activity android:name=".event.EventDetailActivity"></activity>
     </application>
 
 </manifest>

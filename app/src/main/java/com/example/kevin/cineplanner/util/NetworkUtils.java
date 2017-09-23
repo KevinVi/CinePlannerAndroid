@@ -16,16 +16,22 @@ import com.example.kevin.cineplanner.planning.PlanningActivity;
 import com.ncornette.cache.OkCacheControl;
 
 import java.io.File;
+import java.io.FilterInputStream;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Authenticator;
 import okhttp3.Cache;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
+
+import com.jakewharton.disklrucache.DiskLruCache;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -58,6 +64,7 @@ public class NetworkUtils {
     public static OkHttpClient client(final Context context, final String cacheName) {
         File file = new File(context.getCacheDir(), cacheName);
         Cache cache = new Cache(file, getCacheFileSize());
+        Log.d(TAG, "client: " + cache);
         Interceptor interceptor = new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -65,7 +72,7 @@ public class NetworkUtils {
                 if (isOnline(context)) {
                     return chain.proceed(
                             request.newBuilder()
-                                    .addHeader("Cache-Control", "public, max-stale=" + 120)
+                                    .addHeader("Cache-Control", "public, max-stale=" + TimeUnit.MILLISECONDS.toSeconds(getMaxStale()))
                                     .build()
                     );
                 } else {
@@ -137,12 +144,60 @@ public class NetworkUtils {
     }
 
 
-    public Long getMaxStale() {
+    public static Long getMaxStale() {
         return (long) (60 * 1000 * 5);
     }
 
     public static Integer getCacheFileSize() {
         return 10 * 1024 * 1024;
+    }
+
+    /**
+     * Return cache from listed cache files.
+     *
+     * @param context      for get from cache directory
+     * @param url          for get from a endpoint too
+     * @param endpointName for get the correct dir
+     * @return Return String of cache.
+     */
+    public static String getFromCache(Context context, HttpUrl url, String endpointName) {
+        try {
+            DiskLruCache cache = DiskLruCache.open(new File(context.getCacheDir(), endpointName), 201105, 2,
+                    getCacheFileSize()
+            );
+            cache.flush();
+            String key = Cache.key(url);
+            final DiskLruCache.Snapshot snapshot;
+            snapshot = cache.get(key);
+            if (snapshot == null) {
+                if (BuildConfig.DEBUG) {
+                    Log.i(TAG, "getFromCache: null" + cache.size());
+                    Log.i(TAG, "getFromCache: " + url);
+                    Log.i(TAG, "getFromCache: " + endpointName);
+                } else {
+                    Log.i(TAG, "getFromCache: not null");
+                }
+                return null;
+            }
+            FilterInputStream bodyIn = new FilterInputStream(snapshot.getInputStream(1)) {
+                @Override
+                public void close() throws IOException {
+                    snapshot.close();
+                    super.close();
+                }
+            };
+            Scanner sc = new Scanner(bodyIn);
+            String str = "";
+            String strNext;
+            while (sc.hasNext() && (strNext = sc.nextLine()) != null) {
+                str = str + strNext;
+            }
+            Log.d(TAG, "getFromCache: " + str);
+            return str;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 

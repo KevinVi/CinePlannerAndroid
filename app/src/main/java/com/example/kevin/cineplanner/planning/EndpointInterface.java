@@ -19,14 +19,18 @@ import retrofit2.http.POST;
 
 public interface EndpointInterface {
     @Headers("Content-Type: application/json")
-    @POST("team/create")
+    @POST("create")
     Call<TeamModel> createTeam(@Header("token") String login, @Body JsonObject jsonObject);
 
-    @POST("team/teams")
+    @POST("teams")
     Call<List<TeamModel>> getTeams(@Header("token") String login);
 
     @Headers("Content-Type: application/json")
     @POST("event/create")
     Call<EventModel> createEvent(@Header("token") String login, @Body JsonObject jsonObject);
+
+    @Headers("Content-Type: application/json")
+    @POST("event/udpate")
+    Call<EventModel> updateEvent(@Header("token") String login, @Body JsonObject jsonObject);
 
 }
