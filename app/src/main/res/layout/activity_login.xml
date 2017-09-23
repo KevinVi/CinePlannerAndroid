@@ -33,6 +33,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="textWebEmailAddress"
                 android:maxLines="1"
+                android:text="kevin.vivor@gmail.com"
                 android:nextFocusDown="@+id/password_id_input"
                 tools:ignore="RtlHardcoded"/>
         </android.support.design.widget.TextInputLayout>

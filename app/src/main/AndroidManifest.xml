@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,7 +22,8 @@
         </activity>
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".planning.PlanningActivity" />
-        <activity android:name=".event.EventActivity"></activity>
+        <activity android:name=".event.EventActivity" />
+        <activity android:name=".invite.InviteActivity"></activity>
     </application>
 
 </manifest>

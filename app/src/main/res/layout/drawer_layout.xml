@@ -51,5 +51,13 @@
             android:layout_height="wrap_content"
             android:text="@string/add_team" />
 
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/logout"
+            android:paddingTop="20dp"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/logout" />
+
     </android.support.v7.widget.LinearLayoutCompat>
 </android.support.v4.widget.DrawerLayout>

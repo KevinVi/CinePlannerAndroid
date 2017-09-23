@@ -53,7 +53,7 @@ public class LoginTools {
     public static void setSelectedTeam(Context context, int team) {
         final SharedPreferences loginPreferences = context.getSharedPreferences(PREF_LOGIN, Context.MODE_PRIVATE);
         final SharedPreferences.Editor prefsEditor = loginPreferences.edit();
-        prefsEditor.putInt(PREF_LOGIN_TOKEN, team);
+        prefsEditor.putInt(PREF_SELECTED_TEAM, team);
         prefsEditor.apply();
     }
 

@@ -20,6 +20,7 @@ import com.example.kevin.cineplanner.BuildConfig;
 import com.example.kevin.cineplanner.MyDialogFragment;
 import com.example.kevin.cineplanner.R;
 import com.example.kevin.cineplanner.event.EventActivity;
+import com.example.kevin.cineplanner.invite.InviteActivity;
 import com.example.kevin.cineplanner.login.LoginActivity;
 import com.example.kevin.cineplanner.login.LoginInterface;
 import com.example.kevin.cineplanner.login.LoginModel;
@@ -53,6 +54,7 @@ public class PlanningActivity extends AbstractPlanning {
     public static ListView mDrawerList;
 
     private AppCompatButton addTeam;
+    private AppCompatButton logout;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
@@ -75,6 +77,7 @@ public class PlanningActivity extends AbstractPlanning {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         addTeam = (AppCompatButton) findViewById(R.id.add_team);
+        logout = (AppCompatButton) findViewById(R.id.logout);
         Log.d(TAG, "onCreate: " + mDrawerLayout);
         mTitle = mDrawerTitle = getTitle();
         // Set the adapter for the list view
@@ -108,9 +111,14 @@ public class PlanningActivity extends AbstractPlanning {
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Toast.makeText(PlanningActivity.this, "invite", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+                if (mDrawerList.getCheckedItemPosition() >= 0) {
+                    Intent intent = new Intent(getApplicationContext(), InviteActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(PlanningActivity.this, "invite", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+                } else {
+                    Toast.makeText(PlanningActivity.this, "Sélectionnez une taem", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         event.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +146,14 @@ public class PlanningActivity extends AbstractPlanning {
                 dFragment.show(getSupportFragmentManager(), "MyDialogFragment");
             }
         });
-
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginTools.deleteLoginInfo(getApplicationContext());
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -155,6 +170,7 @@ public class PlanningActivity extends AbstractPlanning {
             @Override
             public void onDrawerClosed(View drawerView) {
                 Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+                LoginTools.setSelectedTeam(getApplicationContext(), mDrawerList.getCheckedItemPosition());
             }
 
             @Override
@@ -195,6 +211,7 @@ public class PlanningActivity extends AbstractPlanning {
 
                     mDrawerList.setAdapter(arrayAdapter);
                     if (LoginTools.getSelectedTeam(getApplicationContext()) >= 0) {
+                        Log.d(TAG, "onResponse: " + LoginTools.getSelectedTeam(getApplicationContext()));
                         mDrawerList.setItemChecked(LoginTools.getSelectedTeam(getApplicationContext()), true);
                     }
 

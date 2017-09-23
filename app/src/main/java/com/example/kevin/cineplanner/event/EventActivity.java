@@ -3,6 +3,7 @@ package com.example.kevin.cineplanner.event;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -48,7 +49,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
     private int day;
     private int month;
     private int year;
-    private long id;
+    private int id;
     private static final String TAG = "EventActivity";
     private DatePickerDialog datePickerDialog;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
@@ -73,6 +74,15 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
         id = bundle.getInt(TEAM);
         datePickerDialog = new DatePickerDialog(
                 this, this, year, month, day);
+
+        startDate.setText(
+                year + " / " + (month + 1) + " / "
+                        + day);
+        endDate.setText(
+                year + " / " + (month + 1) + " / "
+                        + day);
+        startHour.setText("17:00");
+        endHour.setText("20:00");
         startDate.setOnClickListener(this);
         startHour.setOnClickListener(this);
         endDate.setOnClickListener(this);
@@ -94,103 +104,130 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                 datePickerDialog.show();
                 break;
             case R.id.hour_start:
-                Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
+                int hour = 17;
+                int minute = 0;
                 TimePickerDialog mTimePicker;
                 mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        startHour.setText(selectedHour + ":" + selectedMinute);
+
+                        String time;
+                        if (selectedMinute < 10) {
+                            time = ":0" + selectedMinute;
+                        } else {
+                            time = ":" + selectedMinute;
+                        }
+                        if (selectedHour < 10) {
+                            time = "0" + selectedHour + time;
+                        } else {
+                            time = selectedHour + time;
+                        }
+                        startHour.setText(time);
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
                 break;
             case R.id.hour_end:
-                Calendar mcurrentTime2 = Calendar.getInstance();
-                int hour2 = mcurrentTime2.get(Calendar.HOUR_OF_DAY);
-                int minute2 = mcurrentTime2.get(Calendar.MINUTE);
+                int hour2 = 20;
+                int minute2 = 0;
                 TimePickerDialog mTimePicker2;
                 mTimePicker2 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        endHour.setText(selectedHour + ":" + selectedMinute);
+                        String time;
+                        if (selectedMinute < 10) {
+                            time = ":0" + selectedMinute;
+                        } else {
+                            time = ":" + selectedMinute;
+                        }
+                        if (selectedHour < 10) {
+                            time = "0" + selectedHour + time;
+                        } else {
+                            time = selectedHour + time;
+                        }
+                        endHour.setText(time);
+                        if (Integer.valueOf(startHour.getText().toString().replace(":", "")) >= Integer.valueOf(endHour.getText().toString().replace(":", ""))) {
+                            endHour.setTextColor(Color.RED);
+                        } else {
+                            endHour.setTextColor(Color.BLACK);
+                        }
                     }
                 }, hour2, minute2, true);//Yes 24 hour time
                 mTimePicker2.setTitle("Select Time");
                 mTimePicker2.show();
                 break;
             case R.id.create:
-                String nameEvent = name.getText().toString();
-//                long startTime = 0;
-//                if (!start.getText().toString().isEmpty())
-//                    startTime = Long.valueOf(start.getText().toString());
-//
-//                long endTime = 0;
-//                if (!end.getText().toString().isEmpty())
-//                    endTime = Long.valueOf(end.getText().toString());
-                String start = startDate + " " + startHour;
-                Date startTime = new Date();
-                Log.d(TAG, "onClick: " + start);
-                try {
-                    startTime = simpleDateFormat.parse(start);
-                } catch (ParseException ex) {
-                    System.out.println("Exception " + ex);
-                }
-                String end = endDate + " " + endHour;
-                Log.d(TAG, "onClick: " + start);
-                Date endTime = new Date();
-                try {
-                    endTime = simpleDateFormat.parse(end);
-                } catch (ParseException ex) {
-                    System.out.println("Exception " + ex);
-                }
-                if (endTime.getTime() != 0 && startTime.getTime() != 0 && !nameEvent.isEmpty()) {
-
-
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("name", nameEvent);
-                    jsonObject.addProperty("start", startTime.getTime());
-                    jsonObject.addProperty("end", endTime.getTime());
-                    jsonObject.addProperty("idTeam", id);
-                    Log.d(TAG, "onClick: " + jsonObject);
-
-                    String url = BuildConfig.URL;
-                    Retrofit.Builder retrofit = new Retrofit.Builder()
-                            .client(NetworkUtils.client(getApplicationContext(), "event"))
-                            .baseUrl(url)
-                            .addConverterFactory(GsonConverterFactory.create());
-                    EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
-                    Call<EventModel> call = endpointInterface.createEvent(LoginTools.getToken(getApplicationContext()), jsonObject);
-                    call.enqueue(new Callback<EventModel>() {
-                        @Override
-                        public void onResponse(Call<EventModel> call, Response<EventModel> response) {
-                            Log.d(TAG, "onResponse: " + response);
-                            if (response.isSuccessful()) {
-                                Toast.makeText(EventActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
-
-                                Intent intent = new Intent();
-                                intent.putExtra("event", response.body());
-                                setResult(1, intent);
-                                finish();
-
-                            } else {
-                                Toast.makeText(EventActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
-                            }
+                if ((Integer.valueOf(startHour.getText().toString().replace(":", "")) >= Integer.valueOf(endHour.getText().toString().replace(":", "")))) {
+                    endHour.setTextColor(Color.RED);
+                    Toast.makeText(this, "L'événement doit finir après l'heure de commencement", Toast.LENGTH_SHORT).show();
+                } else {
+                    String nameEvent = name.getText().toString();
+                    if (nameEvent.isEmpty()) {
+                        Toast.makeText(this, "L'événement doit avoir un nom", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String start = startDate + " " + startHour;
+                        Date startTime = new Date();
+                        Log.d(TAG, "onClick: " + start);
+                        try {
+                            startTime = simpleDateFormat.parse(start);
+                        } catch (ParseException ex) {
+                            System.out.println("Exception " + ex);
                         }
-
-                        @Override
-                        public void onFailure(Call<EventModel> call, Throwable t) {
-                            Log.d(TAG, "onFailure: " + t.getMessage());
-                            Toast.makeText(EventActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-
+                        String end = endDate + " " + endHour;
+                        Log.d(TAG, "onClick: " + start);
+                        Date endTime = new Date();
+                        try {
+                            endTime = simpleDateFormat.parse(end);
+                        } catch (ParseException ex) {
+                            System.out.println("Exception " + ex);
                         }
-                    });
+                        if (endTime.getTime() != 0 && startTime.getTime() != 0 && !nameEvent.isEmpty()) {
+
+
+                            JsonObject jsonObject = new JsonObject();
+                            jsonObject.addProperty("name", nameEvent);
+                            jsonObject.addProperty("start", startTime.getTime());
+                            jsonObject.addProperty("end", endTime.getTime());
+                            jsonObject.addProperty("idTeam", id);
+                            Log.d(TAG, "onClick: " + jsonObject);
+
+                            String url = BuildConfig.URL;
+                            Retrofit.Builder retrofit = new Retrofit.Builder()
+                                    .client(NetworkUtils.client(getApplicationContext(), "event"))
+                                    .baseUrl(url)
+                                    .addConverterFactory(GsonConverterFactory.create());
+                            EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+                            Call<EventModel> call = endpointInterface.createEvent(LoginTools.getToken(getApplicationContext()), jsonObject);
+                            call.enqueue(new Callback<EventModel>() {
+                                @Override
+                                public void onResponse(Call<EventModel> call, Response<EventModel> response) {
+                                    Log.d(TAG, "onResponse: " + response);
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(EventActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+
+                                        Intent intent = new Intent();
+                                        intent.putExtra("event", response.body());
+                                        setResult(1, intent);
+                                        finish();
+
+                                    } else {
+                                        Toast.makeText(EventActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<EventModel> call, Throwable t) {
+                                    Log.d(TAG, "onFailure: " + t.getMessage());
+                                    Toast.makeText(EventActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        } else {
+                            Toast.makeText(this, "L'événement n'a pas de date conforme", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
-
-
-                Toast.makeText(this, "Time " + nameEvent + " | " + startTime + " | " + endTime, Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
