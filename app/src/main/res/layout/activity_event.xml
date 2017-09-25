@@ -38,52 +38,102 @@
 
     </android.support.v7.widget.LinearLayoutCompat>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="8dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_toStartOf="@+id/search_movie"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/movie_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Film">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/movie_id_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_person_black_24dp"
+                    android:drawablePadding="8dp"
+                    android:imeOptions="actionNext"
+                    android:inputType="textWebEmailAddress"
+                    android:maxLines="1"
+                    tools:ignore="RtlHardcoded" />
+            </android.support.design.widget.TextInputLayout>
+
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/search_movie"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_search_black_24dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:id="@+id/date_start"
-            android:hint="dim 24 sept 2017"/>
-        <android.support.v7.widget.AppCompatTextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:hint="dim 24 sept 2017" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/hour_start"
             style="@style/Base.TextAppearance.AppCompat.Subhead"
-            android:hint="22:20"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/hour_start"/>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="22:20" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:id="@+id/date_end"
-            android:hint="dim 24 sept 2017"/>
-        <android.support.v7.widget.AppCompatTextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:hint="dim 24 sept 2017" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/hour_end"
             style="@style/Base.TextAppearance.AppCompat.Subhead"
-            android:hint="22:20"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/hour_end"/>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="22:20" />
     </LinearLayout>
 
     <android.support.v7.widget.AppCompatButton

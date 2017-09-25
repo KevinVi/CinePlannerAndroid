@@ -51,5 +51,12 @@
             android:id="@+id/action_invite"
             fab:fab_label="Invite"
             fab:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_autorenew_black_24dp"
+            android:id="@+id/action_refresh"
+            fab:fab_label="Refresh"
+            fab:fab_size="mini" />
     </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>
