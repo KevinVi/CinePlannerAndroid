@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -56,11 +57,11 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
     private int day;
     private int month;
     private int year;
-    private int id;
+    private long id;
     private BoxLoading alert;
     private static final String TAG = "EventActivity";
     private DatePickerDialog datePickerDialog;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
     public static MovieModel movieSelected;
 
@@ -88,16 +89,17 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
         day = bundle.getInt(DAY);
         month = bundle.getInt(MONTH);
         year = bundle.getInt(YEAR);
-        id = bundle.getInt(TEAM);
+        id = bundle.getLong(TEAM);
+        Log.d(TAG, "onCreate: " + id);
         datePickerDialog = new DatePickerDialog(
                 this, this, year, month, day);
 
         startDate.setText(
-                year + " / " + (month + 1) + " / "
-                        + day);
+                day + "/" + (month + 1) + "/"
+                        + year);
         endDate.setText(
-                year + " / " + (month + 1) + " / "
-                        + day);
+                day + "/" + (month + 1) + "/"
+                        + year);
         startHour.setText("17:00");
         endHour.setText("20:00");
         startDate.setOnClickListener(this);
@@ -186,21 +188,21 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                     if (nameEvent.isEmpty()) {
                         Toast.makeText(this, "L'événement doit avoir un nom", Toast.LENGTH_SHORT).show();
                     } else {
-                        String start = startDate + " " + startHour;
+                        String start = startDate.getText().toString() + " " + startHour.getText().toString();
                         Date startTime = new Date();
                         Log.d(TAG, "onClick: " + start);
                         try {
                             startTime = simpleDateFormat.parse(start);
                         } catch (ParseException ex) {
-                            System.out.println("Exception " + ex);
+                            Log.d(TAG, "onClick: " + ex);
                         }
-                        String end = endDate + " " + endHour;
+                        String end = endDate.getText().toString() + " " + endHour.getText().toString();
                         Log.d(TAG, "onClick: " + start);
                         Date endTime = new Date();
                         try {
                             endTime = simpleDateFormat.parse(end);
                         } catch (ParseException ex) {
-                            System.out.println("Exception " + ex);
+                            Log.d(TAG, "onClick: " + ex);
                         }
                         if (endTime.getTime() != 0 && startTime.getTime() != 0 && !nameEvent.isEmpty()) {
 
@@ -210,6 +212,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                             jsonObject.addProperty("start", startTime.getTime());
                             jsonObject.addProperty("end", endTime.getTime());
                             jsonObject.addProperty("idTeam", id);
+                            jsonObject.addProperty("idMovie", movieSelected.getId());
                             Log.d(TAG, "onClick: " + jsonObject);
 
                             String url = BuildConfig.URL;
@@ -230,7 +233,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
 
                                         Intent intent = new Intent();
                                         intent.putExtra("event", response.body());
-                                        setResult(1, intent);
+                                        setResult(2, intent);
                                         finish();
 
                                     } else {
@@ -307,10 +310,10 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
         startDate.setText(
-                i2 + " / " + (i1 + 1) + " / "
+                i2 + "/" + (i1 + 1) + "/"
                         + i);
         endDate.setText(
-                i2 + " / " + (i1 + 1) + " / "
+                i2 + "/" + (i1 + 1) + "/"
                         + i);
     }
 }

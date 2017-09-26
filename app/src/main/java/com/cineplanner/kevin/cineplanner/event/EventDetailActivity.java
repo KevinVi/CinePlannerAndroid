@@ -57,7 +57,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     private int year;
     private String nameTeam;
     private EventModel eventModel;
-    private int id;
+    private long id;
     private DatePickerDialog datePickerDialog;
     Calendar cal;
     Calendar cal2;
@@ -88,7 +88,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
 
 
         eventModel = (EventModel) bundle.getSerializable(EVENT);
-        id = bundle.getInt(TEAM);
+        id = bundle.getLong(TEAM);
         nameTeam = bundle.getString(NAMETEAM);
         team.setText(nameTeam);
         name.setText(eventModel.getName());
@@ -101,10 +101,10 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                 this, this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
         startDate.setText(
-                cal.get(Calendar.DAY_OF_MONTH) + " / " + (cal.get(Calendar.MONTH) + 1) + " / "
+                cal.get(Calendar.DAY_OF_MONTH) + "/" + (cal.get(Calendar.MONTH) + 1) + "/"
                         + cal.get(Calendar.YEAR));
         endDate.setText(
-                cal2.get(Calendar.DAY_OF_MONTH) + " / " + (cal2.get(Calendar.MONTH) + 1) + " / "
+                cal2.get(Calendar.DAY_OF_MONTH) + "/" + (cal2.get(Calendar.MONTH) + 1) + "/"
                         + cal2.get(Calendar.YEAR));
 
         String time;
@@ -132,6 +132,10 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         }
         endHour.setText(time);
 
+        if (eventModel.getMovie() != null) {
+            movie.setText(eventModel.getMovie().getTitle());
+        }
+
         startDate.setOnClickListener(this);
         startHour.setOnClickListener(this);
         endDate.setOnClickListener(this);
@@ -145,10 +149,10 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
         startDate.setText(
-                i2 + " / " + (i1 + 1) + " / "
+                i2 + "/" + (i1 + 1) + "/"
                         + i);
         endDate.setText(
-                i2 + " / " + (i1 + 1) + " / "
+                i2 + "/" + (i1 + 1) + "/"
                         + i);
     }
 
@@ -289,6 +293,10 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                 }
                 break;
             case R.id.delete:
+                Intent intent = new Intent();
+                intent.putExtra("idMovie", eventModel.getId());
+                setResult(3, intent);
+                finish();
                 break;
             case R.id.search_movie:
                 if (!movie.getText().toString().isEmpty()) {

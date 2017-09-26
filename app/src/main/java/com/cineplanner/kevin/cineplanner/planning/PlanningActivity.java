@@ -175,6 +175,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (mDrawerList.getCheckedItemPosition() >= 0) {
                     if (NetworkUtils.isOnline(getApplicationContext())) {
                         Toast.makeText(PlanningActivity.this, "event" + getWeekView().getFirstVisibleDay().get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
@@ -182,8 +183,8 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                         intent.putExtra(MONTH, getWeekView().getFirstVisibleDay().get(Calendar.MONTH));
                         intent.putExtra(DAY, getWeekView().getFirstVisibleDay().get(Calendar.DAY_OF_MONTH));
                         intent.putExtra(YEAR, getWeekView().getFirstVisibleDay().get(Calendar.YEAR));
-                        intent.putExtra(TEAM, teamIds.get(mDrawerList.getCheckedItemPosition()));
-                        startActivity(intent);
+                        intent.putExtra(EventActivity.TEAM, teamIds.get(mDrawerList.getCheckedItemPosition()));
+                        startActivityForResult(intent, 2);
                     } else {
                         Toast.makeText(PlanningActivity.this, "Internet necessaire pour créé un événement", Toast.LENGTH_SHORT).show();
                     }
@@ -225,7 +226,8 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
             @Override
             public void onDrawerClosed(View drawerView) {
                 Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
-                if (LoginTools.getSelectedTeam(getApplicationContext()) >= 0) {
+                Log.d(TAG, "onClick: ids" + teamIds);
+                if (mDrawerList.getCheckedItemPosition() >= 0) {
 
                     LoginTools.setSelectedTeam(getApplicationContext(), mDrawerList.getCheckedItemPosition());
 
@@ -277,6 +279,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                         if (!response.body().equals(myTeams))
                             Log.d(TAG, "onResponse: " + response.body().toString());
                         teamNames = new ArrayList<>();
+                        teamIds = new ArrayList<>();
                         for (TeamModel t :
                                 response.body()) {
                             teamNames.add(t.getName());
@@ -335,6 +338,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
 
                     if (teams != null) {
                         teamNames = new ArrayList<>();
+                        teamIds = new ArrayList<>();
                         for (TeamModel t :
                                 teams) {
                             teamNames.add(t.getName());
@@ -380,29 +384,12 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        Log.d(TAG, "onActivityResult: " + resultCode + data);
+        if (requestCode == 2) {
             if (data != null) {
                 if (data.hasExtra("event")) {
                     EventModel event = (EventModel) data.getSerializableExtra("event");
                     Log.d(TAG, "onActivityResult: " + event.toString());
-                    this.events.add(event.toWeekViewEvent());
-
-                    eventMap.put(event.getId(), event);
-
-                    Log.d(TAG, "onActivityResult:events " + events);
-                    getWeekView().notifyDatasetChanged();
-
-                }
-            }
-        } else if (requestCode == 2) {
-            if (data != null) {
-                if (data.hasExtra("event")) {
-                    EventModel event = (EventModel) data.getSerializableExtra("event");
-                    Log.d(TAG, "onActivityResult: " + event.toString());
-
-                    EventModel eventRemove = eventMap.get(event.getId());
-                    this.events.remove(eventRemove.toWeekViewEvent());
-
                     this.events.add(event.toWeekViewEvent());
 
                     eventMap.put(event.getId(), event);
@@ -413,6 +400,23 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                 }
             }
         } else if (requestCode == 3) {
+            if (data != null) {
+                if (data.hasExtra("idMovie")) {
+                    long id = data.getLongExtra("idMovie", -1);
+                    Log.d(TAG, "onActivityResult: " + id);
+
+                    if (id != -1) {
+                        EventModel eventRemove = eventMap.get(id);
+                        this.events.remove(eventRemove.toWeekViewEvent());
+                        eventMap.remove(id);
+                    }
+
+                    Log.d(TAG, "onActivityResult:events " + events);
+                    getWeekView().notifyDatasetChanged();
+
+                }
+            }
+        } else if (requestCode == 4) {
             if (data != null) {
                 if (data.hasExtra("event")) {
                     EventModel event = (EventModel) data.getSerializableExtra("event");
@@ -460,7 +464,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
             intent.putExtra(EVENT, ev);
             intent.putExtra(TEAM, teamIds.get(mDrawerList.getCheckedItemPosition()));
             intent.putExtra(NAMETEAM, teamNames.get(mDrawerList.getCheckedItemPosition()));
-            startActivityForResult(intent, 2);
+            startActivityForResult(intent, 3);
         }
     }
 

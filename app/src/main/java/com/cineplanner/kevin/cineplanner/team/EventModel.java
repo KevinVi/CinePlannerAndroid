@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 
 import com.alamkanak.weekview.WeekViewEvent;
+import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -134,9 +135,12 @@ public class EventModel implements Serializable {
         endTime.setTimeInMillis(getEnd());
 
         // Create an week view event.
-        String title = getName() + "\n" + getMovie().getTitle();
+        String title = getName();
+        if (getMovie() != null) {
+            title += "\n" + getMovie().getTitle();
+        }
         WeekViewEvent weekViewEvent = new WeekViewEvent(getId(), title, startTime, endTime);
-        weekViewEvent.setColor(Color.CYAN);
+        weekViewEvent.setColor(R.color.colorPrimary);
 
         return weekViewEvent;
     }
