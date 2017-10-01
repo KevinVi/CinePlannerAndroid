@@ -1,8 +1,10 @@
 package com.cineplanner.kevin.cineplanner.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -35,9 +37,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextInputLayout loginIdInput;
     private TextInputLayout loginPassInput;
     private AppCompatButton loginBtn;
+    private AppCompatButton create;
     private BoxLoading alert;
 
-    final String url = BuildConfig.URL + "account/";
+    final static String url = BuildConfig.URL + "account/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,56 +51,72 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginIdInput = (TextInputLayout) findViewById(R.id.id_layout);
         loginPassInput = (TextInputLayout) findViewById(R.id.id_layout_password);
         loginBtn = (AppCompatButton) findViewById(R.id.login);
+        create = (AppCompatButton) findViewById(R.id.create_account);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         alert = new BoxLoading();
         loginBtn.setOnClickListener(this);
+        create.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
-        final String username = loginId.getText().toString();
-        final String password = loginPass.getText().toString();
-        if (!username.isEmpty() && !password.isEmpty()) {
-            setUiInProgress(getSupportFragmentManager(), alert, true);
-
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            Retrofit.Builder retrofit = new Retrofit.Builder()
-                    .client(builder.build())
-                    .baseUrl(url)
-                    .addConverterFactory(GsonConverterFactory.create());
-            LoginInterface postInterface = retrofit.build().create(LoginInterface.class);
-            Call<LoginModel> call = postInterface.getLogin(username, password);
-            call.enqueue(new Callback<LoginModel>() {
-                @Override
-                public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                    Log.d(TAG, "onResponse: " + response);
-                    Log.d(TAG, "onResponse: " + response.body().getToken());
-                    if (response.isSuccessful()) {
-                        LoginTools.saveLoginInfo(getApplicationContext(), username, password);
-                        LoginTools.setToken(getApplicationContext(), response.body().getToken());
-                        getAccountInfo(response.body().getToken());
-
-
-                    } else {
-                        loginBtn.setOnClickListener(LoginActivity.this);
-                        setUiInProgress(getSupportFragmentManager(), alert, false);
-                        Toast.makeText(LoginActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
-                    }
+        switch (view.getId()) {
+            case R.id.login:
+                final String username = loginId.getText().toString();
+                final String password = loginPass.getText().toString();
+                if (!username.isEmpty() && !password.isEmpty()) {
+                    getToken(getApplicationContext(), username, password, getSupportFragmentManager(), alert,false);
                 }
-
-                @Override
-                public void onFailure(Call<LoginModel> call, Throwable t) {
-                    Log.d(TAG, "onFailure: " + t.getMessage());
-                    loginBtn.setOnClickListener(LoginActivity.this);
-                    setUiInProgress(getSupportFragmentManager(), alert, false);
-                    Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                break;
+            case R.id.create_account:
+                DialogCreate dFragment = new DialogCreate();
+                // Show DialogFragment
+                dFragment.show(getSupportFragmentManager(), "DialogCreate");
+                break;
+            default:
+                break;
         }
     }
 
-    private void getAccountInfo(String token) {
+    public static void getToken(final Context context, final String username, final String password, final FragmentManager manager, final BoxLoading alert,boolean create) {
+        if (!create) {
+            setUiInProgress(manager, alert, true);
+        }
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        Retrofit.Builder retrofit = new Retrofit.Builder()
+                .client(builder.build())
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create());
+        LoginInterface postInterface = retrofit.build().create(LoginInterface.class);
+        Call<LoginModel> call = postInterface.getLogin(username, password);
+        call.enqueue(new Callback<LoginModel>() {
+            @Override
+            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                Log.d(TAG, "onResponse: " + response);
+                Log.d(TAG, "onResponse: " + response.body().getToken());
+                if (response.isSuccessful()) {
+                    LoginTools.saveLoginInfo(context, username, password);
+                    LoginTools.setToken(context, response.body().getToken());
+                    getAccountInfo(context, response.body().getToken(), manager, alert);
+
+
+                } else {
+                    setUiInProgress(manager, alert, false);
+                    Toast.makeText(context, response.raw().toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginModel> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                setUiInProgress(manager, alert, false);
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private static void getAccountInfo(final Context context, String token, final FragmentManager manager, final BoxLoading alert) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         Retrofit.Builder retrofit = new Retrofit.Builder()
                 .client(builder.build())
@@ -110,19 +129,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onResponse(@NonNull Call<AccountModel> call, @NonNull Response<AccountModel> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "onResponse: " + response.body());
-                    setUiInProgress(getSupportFragmentManager(), alert, false);
-                    LoginTools.saveInfo(getApplicationContext(), response.body().getAccount().getFirstName(), response.body().getAccount().getLastName(), response.body().getAccount().getId());
-                    Intent intent = new Intent(getApplicationContext(), PlanningActivity.class);
-                    startActivity(intent);
+                    setUiInProgress(manager, alert, false);
+                    LoginTools.saveInfo(context, response.body().getAccount().getFirstName(), response.body().getAccount().getLastName(), response.body().getAccount().getId());
+                    Intent intent = new Intent(context, PlanningActivity.class);
+                    context.startActivity(intent);
                 } else {
                     Log.d(TAG, "onResponse: " + response.raw());
-                    setUiInProgress(getSupportFragmentManager(), alert, false);
+                    setUiInProgress(manager, alert, false);
                 }
             }
 
             @Override
             public void onFailure(Call<AccountModel> call, Throwable t) {
-                setUiInProgress(getSupportFragmentManager(), alert, false);
+                setUiInProgress(manager, alert, false);
 
             }
         });

@@ -1,6 +1,9 @@
 package com.cineplanner.kevin.cineplanner.login;
 
+import com.google.gson.JsonObject;
+
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 
@@ -15,6 +18,10 @@ public interface LoginInterface {
 
     @POST("my-account")
     Call<AccountModel> getAccountInfo(@Header("token") String login);
+
+
+    @POST("create")
+    Call<AccountModel> createAccount(@Header("token") String login, @Body JsonObject jsonObject);
     // @GET("whoami")
     // @Headers({"X-Appscho-ServerId:154LWU"})
     // Call<LoginModel> getLogin();
