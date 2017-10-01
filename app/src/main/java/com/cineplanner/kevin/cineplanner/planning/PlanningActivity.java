@@ -36,6 +36,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.internal.Streams;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -86,9 +87,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
     private List<EventModel> currentEvents = new ArrayList<>();
-    private List<TeamModel> myTeams = new ArrayList<>();
-    private List<Long> teamIds = new ArrayList<>();
-    List<String> teamNames = new ArrayList<>();
+    public static List<TeamModel> myTeams = new ArrayList<>();
     private BoxLoading alert;
 
 
@@ -183,7 +182,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                         intent.putExtra(MONTH, getWeekView().getFirstVisibleDay().get(Calendar.MONTH));
                         intent.putExtra(DAY, getWeekView().getFirstVisibleDay().get(Calendar.DAY_OF_MONTH));
                         intent.putExtra(YEAR, getWeekView().getFirstVisibleDay().get(Calendar.YEAR));
-                        intent.putExtra(EventActivity.TEAM, teamIds.get(mDrawerList.getCheckedItemPosition()));
+                        intent.putExtra(EventActivity.TEAM, myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
                         startActivityForResult(intent, 2);
                     } else {
                         Toast.makeText(PlanningActivity.this, "Internet necessaire pour créé un événement", Toast.LENGTH_SHORT).show();
@@ -226,7 +225,6 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
             @Override
             public void onDrawerClosed(View drawerView) {
                 Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
-                Log.d(TAG, "onClick: ids" + teamIds);
                 if (mDrawerList.getCheckedItemPosition() >= 0) {
 
                     LoginTools.setSelectedTeam(getApplicationContext(), mDrawerList.getCheckedItemPosition());
@@ -278,12 +276,10 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                     if (response.body() != null) {
                         if (!response.body().equals(myTeams))
                             Log.d(TAG, "onResponse: " + response.body().toString());
-                        teamNames = new ArrayList<>();
-                        teamIds = new ArrayList<>();
+                        List<String> teamNames = new ArrayList<>();
                         for (TeamModel t :
                                 response.body()) {
                             teamNames.add(t.getName());
-                            teamIds.add(t.getId());
                         }
                         ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(),
                                 android.R.layout.simple_list_item_multiple_choice, teamNames);
@@ -330,19 +326,18 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
             }
 
             @Override
-            public void onFailure(Call<List<TeamModel>> call, Throwable thwThrowable) {
+            public void onFailure(@NonNull Call<List<TeamModel>> call, @NonNull Throwable thwThrowable) {
                 Type resultType = new TypeToken<List<TeamModel>>() {
                 }.getType();
                 try {
                     List<TeamModel> teams = Reservoir.get("teams", resultType);
 
                     if (teams != null) {
-                        teamNames = new ArrayList<>();
-                        teamIds = new ArrayList<>();
+                        List<String> teamNames = new ArrayList<>();
+
                         for (TeamModel t :
                                 teams) {
                             teamNames.add(t.getName());
-                            teamIds.add(t.getId());
                         }
                         ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(),
                                 android.R.layout.simple_list_item_multiple_choice, teamNames);
@@ -462,8 +457,8 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
             EventModel ev = eventMap.get(event.getId());
             Intent intent = new Intent(getApplicationContext(), EventDetailActivity.class);
             intent.putExtra(EVENT, ev);
-            intent.putExtra(TEAM, teamIds.get(mDrawerList.getCheckedItemPosition()));
-            intent.putExtra(NAMETEAM, teamNames.get(mDrawerList.getCheckedItemPosition()));
+            intent.putExtra(TEAM, myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+            intent.putExtra(NAMETEAM, myTeams.get(mDrawerList.getCheckedItemPosition()).getName());
             startActivityForResult(intent, 3);
         }
     }

@@ -19,11 +19,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.cineplanner.kevin.cineplanner.login.LoginActivity" />
-        <activity android:name="com.cineplanner.kevin.cineplanner.planning.PlanningActivity" />
-        <activity android:name="com.cineplanner.kevin.cineplanner.event.EventActivity" />
-        <activity android:name="com.cineplanner.kevin.cineplanner.invite.InviteActivity" />
-        <activity android:name="com.cineplanner.kevin.cineplanner.event.EventDetailActivity"></activity>
+        <activity
+            android:name="com.cineplanner.kevin.cineplanner.login.LoginActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cineplanner.kevin.cineplanner.planning.PlanningActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cineplanner.kevin.cineplanner.event.EventActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cineplanner.kevin.cineplanner.invite.InviteActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cineplanner.kevin.cineplanner.event.EventDetailActivity"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

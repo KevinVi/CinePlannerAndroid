@@ -1,5 +1,7 @@
 package com.cineplanner.kevin.cineplanner.movie;
 
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,16 +17,28 @@ import com.cineplanner.kevin.cineplanner.event.MovieModel;
 
 public class DialogViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private final AppCompatTextView titleMovie;
+    private final AppCompatTextView dateMovie;
+    private final AppCompatImageView imageMovie;
 
 
     public DialogViewHolder(View itemView) {
         super(itemView);
         titleMovie = itemView.findViewById(R.id.title_movie);
+        dateMovie = itemView.findViewById(R.id.date_movie);
+        imageMovie = itemView.findViewById(R.id.image_movie);
         itemView.setOnClickListener(this);
     }
 
     public AppCompatTextView getTitleMovie() {
         return titleMovie;
+    }
+
+    public AppCompatTextView getDateMovie() {
+        return dateMovie;
+    }
+
+    public AppCompatImageView getImageMovie() {
+        return imageMovie;
     }
 
     @Override

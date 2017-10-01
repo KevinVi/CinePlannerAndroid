@@ -9,6 +9,8 @@ import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.w3c.dom.Comment;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,18 +31,22 @@ public class EventModel implements Serializable {
     @SerializedName("creator")
     @Expose
     private String creator;
+
+    @SerializedName("creatorId")
+    @Expose
+    private int creatorId;
     @SerializedName("start")
     @Expose
     private long start;
     @SerializedName("end")
     @Expose
     private long end;
-    @SerializedName("preComments")
+    @SerializedName("comments")
     @Expose
-    private ArrayList<String> preComments;
-    @SerializedName("postComments")
+    private ArrayList<CommentModel> comments;
+    @SerializedName("notations")
     @Expose
-    private ArrayList<String> postComments;
+    private ArrayList<NotationModel> notations;
     @SerializedName("movie")
     @Expose
     private MovieModel movie;
@@ -66,16 +72,21 @@ public class EventModel implements Serializable {
         return end;
     }
 
-    public ArrayList<String> getPreComments() {
-        return preComments;
-    }
-
-    public ArrayList<String> getPostComments() {
-        return postComments;
-    }
 
     public MovieModel getMovie() {
         return movie;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
+    public ArrayList<CommentModel> getComments() {
+        return comments;
+    }
+
+    public ArrayList<NotationModel> getNotations() {
+        return notations;
     }
 
     @Override
@@ -90,10 +101,11 @@ public class EventModel implements Serializable {
         if (end != that.end) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (creator != null ? !creator.equals(that.creator) : that.creator != null) return false;
+        if (creatorId != that.creatorId) return false;
         if (movie != null ? !movie.equals(that.movie) : that.movie != null) return false;
-        if (preComments != null ? !preComments.equals(that.preComments) : that.preComments != null)
+        if (comments != null ? !comments.equals(that.comments) : that.comments != null)
             return false;
-        return postComments != null ? postComments.equals(that.postComments) : that.postComments == null;
+        return notations != null ? notations.equals(that.notations) : that.notations == null;
 
     }
 
@@ -104,8 +116,8 @@ public class EventModel implements Serializable {
         result = 31 * result + (creator != null ? creator.hashCode() : 0);
         result = 31 * result + (int) (start ^ (start >>> 32));
         result = 31 * result + (int) (end ^ (end >>> 32));
-        result = 31 * result + (preComments != null ? preComments.hashCode() : 0);
-        result = 31 * result + (postComments != null ? postComments.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        result = 31 * result + (notations != null ? notations.hashCode() : 0);
         return result;
     }
 
@@ -115,10 +127,11 @@ public class EventModel implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", creator='" + creator + '\'' +
+                ", creatorId='" + creatorId + '\'' +
                 ", start=" + start +
                 ", end=" + end +
-                ", preComments=" + preComments +
-                ", postComments=" + postComments +
+                ", comments=" + comments +
+                ", notations=" + notations +
                 ", movie=" + movie +
                 '}';
     }

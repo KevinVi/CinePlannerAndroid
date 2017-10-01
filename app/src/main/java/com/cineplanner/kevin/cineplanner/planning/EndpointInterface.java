@@ -2,6 +2,7 @@ package com.cineplanner.kevin.cineplanner.planning;
 
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import com.cineplanner.kevin.cineplanner.team.EventModel;
+import com.cineplanner.kevin.cineplanner.team.NotationModel;
 import com.cineplanner.kevin.cineplanner.team.TeamModel;
 import com.google.gson.JsonObject;
 
@@ -37,4 +38,7 @@ public interface EndpointInterface {
     @POST("event/search")
     Call<List<MovieModel>> searchEvent(@Header("token") String login, @Body JsonObject jsonObject);
 
+    @Headers("Content-Type: application/json")
+    @POST("notation/create")
+    Call<NotationModel> notation(@Header("token") String login, @Body JsonObject jsonObject);
 }

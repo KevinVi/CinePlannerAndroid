@@ -227,7 +227,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                                 public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
-                                        Toast.makeText(EventActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+                                       // Toast.makeText(EventActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
 
                                         setUiInProgress(getSupportFragmentManager(), alert, false);
 

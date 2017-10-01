@@ -11,10 +11,45 @@ public class LoginTools {
     private static final String TAG = "LoginTools";
     private static final String PREF_LOGIN = "PREF_LOGIN";
 
+    private static final String PREF_USER = "PREF_USER";
+
     private static final String PREF_LOGIN_LOGIN = "PREF_LOGIN_LOGIN";
     private static final String PREF_LOGIN_PASSWORD = "PREF_LOGIN_PASSWORD";
     private static final String PREF_LOGIN_TOKEN = "PREF_LOGIN_TOKEN";
     private static final String PREF_SELECTED_TEAM = "PREF_SELECTED_TEAM";
+    private static final String PREF_USER_FIRSTNAME = "PREF_USER_FIRSTNAME";
+    private static final String PREF_USER_LASTNAME = "PREF_USER_LASTNAME";
+    private static final String PREF_USER_ID = "PREF_USER_ID";
+
+
+    /**
+     * Save user content in sharedPreferences.
+     *
+     * @param context   need for SharedPreferences
+     * @param firstname firstname
+     * @param lastname  lastname
+     * @param id        id
+     */
+    public static void saveInfo(Context context, String firstname, String lastname, int id) {
+        final SharedPreferences loginPreferences = context.getSharedPreferences(PREF_USER, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor prefsEditor = loginPreferences.edit();
+        prefsEditor.putString(PREF_USER_FIRSTNAME, firstname);
+        prefsEditor.putString(PREF_USER_LASTNAME, lastname);
+        prefsEditor.putInt(PREF_USER_ID, id);
+        prefsEditor.apply();
+    }
+
+    /**
+     * Get Id for sharedPreferences.
+     *
+     * @param context need for SharedPreferences
+     * @return picture
+     */
+    public static int getIdUser(Context context) {
+        final SharedPreferences loginPreferences = context.getSharedPreferences(PREF_USER, Context.MODE_PRIVATE);
+        return loginPreferences.getInt(PREF_USER_ID, 0);
+    }
+
 
     /**
      * Save user password and logn in sharedPreferences.
@@ -111,6 +146,9 @@ public class LoginTools {
         final SharedPreferences loginPreferences = context.getSharedPreferences(PREF_LOGIN, Context.MODE_PRIVATE);
         final SharedPreferences.Editor prefsEditor = loginPreferences.edit().clear();
         prefsEditor.apply();
+        final SharedPreferences loginPreferencesUser = context.getSharedPreferences(PREF_USER, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor prefsEditorUser = loginPreferencesUser.edit().clear();
+        prefsEditorUser.apply();
     }
 
 

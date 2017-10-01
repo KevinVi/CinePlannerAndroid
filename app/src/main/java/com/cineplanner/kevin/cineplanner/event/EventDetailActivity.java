@@ -9,19 +9,23 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.RatingBar;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
 import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
 import com.cineplanner.kevin.cineplanner.team.EventModel;
+import com.cineplanner.kevin.cineplanner.team.NotationModel;
 import com.cineplanner.kevin.cineplanner.util.NetworkUtils;
 import com.google.gson.JsonObject;
 
@@ -48,8 +52,13 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     private AppCompatTextView endDate;
     private AppCompatTextView endHour;
     private AppCompatTextView team;
+    private AppCompatTextView comments;
     private AppCompatButton update;
     private AppCompatButton delete;
+    private AppCompatButton submitRate;
+    private RatingBar myRating;
+    private RatingBar teamRating;
+    private AppCompatImageView imageView;
     private AppCompatImageButton search;
     public static AppCompatEditText movie;
     private int day;
@@ -80,20 +89,26 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         endDate = (AppCompatTextView) findViewById(R.id.date_end);
         endHour = (AppCompatTextView) findViewById(R.id.hour_end);
         team = (AppCompatTextView) findViewById(R.id.group_name);
+        comments = (AppCompatTextView) findViewById(R.id.comments);
         update = (AppCompatButton) findViewById(R.id.update);
         delete = (AppCompatButton) findViewById(R.id.delete);
+        submitRate = (AppCompatButton) findViewById(R.id.send_rate);
         search = (AppCompatImageButton) findViewById(R.id.search_movie);
-
+        imageView = (AppCompatImageView) findViewById(R.id.img_event);
+        myRating = (RatingBar) findViewById(R.id.my_rating);
+        teamRating = (RatingBar) findViewById(R.id.rating_team);
         Bundle bundle = getIntent().getExtras();
 
 
         eventModel = (EventModel) bundle.getSerializable(EVENT);
         id = bundle.getLong(TEAM);
         nameTeam = bundle.getString(NAMETEAM);
-        team.setText(nameTeam);
+        team.setText("Team : " + nameTeam);
         name.setText(eventModel.getName());
         cal = Calendar.getInstance();
         cal.setTimeInMillis(eventModel.getStart());
+
+        Glide.with(getApplicationContext()).load(eventModel.getMovie().getPoster_path()).into(imageView);
 
         cal2 = Calendar.getInstance();
         cal2.setTimeInMillis(eventModel.getEnd());
@@ -135,14 +150,40 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         if (eventModel.getMovie() != null) {
             movie.setText(eventModel.getMovie().getTitle());
         }
+        float rate = 0;
+        for (NotationModel n :
+                eventModel.getNotations()) {
+            rate += n.getNotation();
+        }
+        rate = rate / eventModel.getNotations().size();
 
-        startDate.setOnClickListener(this);
-        startHour.setOnClickListener(this);
-        endDate.setOnClickListener(this);
-        endHour.setOnClickListener(this);
-        update.setOnClickListener(this);
-        delete.setOnClickListener(this);
-        search.setOnClickListener(this);
+        teamRating.setRating(rate);
+
+        for (NotationModel n :
+                eventModel.getNotations()) {
+            if (n.getAuthorId() == LoginTools.getIdUser(getApplicationContext())) {
+                submitRate.setEnabled(false);
+                myRating.setIsIndicator(true);
+            }
+        }
+
+        comments.setText("Commentaires (" + eventModel.getComments().size() + ")");
+        comments.setOnClickListener(this);
+        if (LoginTools.getIdUser(getApplicationContext()) == eventModel.getCreatorId()) {
+            startDate.setOnClickListener(this);
+            startHour.setOnClickListener(this);
+            endDate.setOnClickListener(this);
+            endHour.setOnClickListener(this);
+            update.setOnClickListener(this);
+            delete.setOnClickListener(this);
+            search.setOnClickListener(this);
+        } else {
+            name.setEnabled(false);
+            movie.setEnabled(false);
+            search.setVisibility(View.GONE);
+            update.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
+        }
 
     }
 
@@ -332,6 +373,50 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     Toast.makeText(this, "Recherche vide", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.send_rate:
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("idEvent", eventModel.getId());
+                jsonObject.addProperty("notation", myRating.getRating());
+                String url = BuildConfig.URL;
+                Retrofit.Builder retrofit = new Retrofit.Builder()
+                        .client(NetworkUtils.client(getApplicationContext(), "notation"))
+                        .baseUrl(url)
+                        .addConverterFactory(GsonConverterFactory.create());
+                EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+                Call<NotationModel> call = endpointInterface.notation(LoginTools.getToken(getApplicationContext()), jsonObject);
+                call.enqueue(new Callback<NotationModel>() {
+                    @Override
+                    public void onResponse(Call<NotationModel> call, Response<NotationModel> response) {
+                        Log.d(TAG, "onResponse: " + response);
+                        if (response.isSuccessful()) {
+                            Toast.makeText(EventDetailActivity.this, "Note enregistré", Toast.LENGTH_SHORT).show();
+                            submitRate.setEnabled(false);
+                            myRating.setIsIndicator(true);
+                            //recalcule
+                            float rate = myRating.getRating();
+                            for (NotationModel n :
+                                    eventModel.getNotations()) {
+                                rate += n.getNotation();
+                            }
+                            rate = rate / eventModel.getNotations().size();
+                            teamRating.setRating(rate);
+
+                        } else {
+                            Toast.makeText(EventDetailActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NotationModel> call, Throwable t) {
+                        Log.d(TAG, "onFailure: " + t.getMessage());
+                        Toast.makeText(EventDetailActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                break;
+            case R.id.comments:
+
                 break;
             default:
                 break;

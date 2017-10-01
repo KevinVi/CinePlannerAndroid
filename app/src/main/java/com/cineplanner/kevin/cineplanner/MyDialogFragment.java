@@ -33,6 +33,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.mDrawerList;
+import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.myTeams;
 
 public class MyDialogFragment extends DialogFragment {
     private static final String TAG = "MyDialogFragment";
@@ -60,7 +61,7 @@ public class MyDialogFragment extends DialogFragment {
 
 
                             Log.d(TAG, "onClick: " + jsonObject);
-                            String url = BuildConfig.URL+"team/";
+                            String url = BuildConfig.URL + "team/";
                             OkHttpClient.Builder builder = new OkHttpClient.Builder();
                             final Context context = getContext();
                             Retrofit.Builder retrofit = new Retrofit.Builder()
@@ -74,12 +75,15 @@ public class MyDialogFragment extends DialogFragment {
                                 public void onResponse(Call<TeamModel> call, Response<TeamModel> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
-                                        List<String> array = new ArrayList<>();
-                                        array.add(teamName);
+                                        myTeams.add(response.body());
+                                        List<String> teamNames = new ArrayList<>();
+                                        for (TeamModel t :
+                                                myTeams) {
+                                            teamNames.add(t.getName());
+                                        }
 
-                                        Log.d(TAG, "onResponse: " + context);
                                         ArrayAdapter arrayAdapter = new ArrayAdapter<>(context,
-                                                android.R.layout.simple_list_item_multiple_choice, array);
+                                                android.R.layout.simple_list_item_multiple_choice, teamNames);
 
                                         mDrawerList.setAdapter(arrayAdapter);
                                         mDrawerList.deferNotifyDataSetChanged();

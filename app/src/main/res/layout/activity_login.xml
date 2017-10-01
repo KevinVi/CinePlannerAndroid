@@ -1,86 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <android.support.v7.widget.AppCompatImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:paddingBottom="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/id_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="login">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/login_id_input"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawableLeft="@drawable/ic_person_black_24dp"
-                android:drawablePadding="8dp"
-                android:imeOptions="actionNext"
-                android:inputType="textWebEmailAddress"
-                android:maxLines="1"
-                android:text="kevin.vivor@gmail.com"
-                android:nextFocusDown="@+id/password_id_input"
-                tools:ignore="RtlHardcoded"/>
-        </android.support.design.widget.TextInputLayout>
-
-    </android.support.v7.widget.LinearLayoutCompat>
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/cine" />
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:paddingBottom="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView">
+        android:layout_centerInParent="true"
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/id_layout_password"
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="password">
+            android:layout_margin="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView">
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/password_id_input"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/id_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
-                android:drawablePadding="8dp"
-                android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:text="cXNH44GxgG"
-                tools:ignore="RtlHardcoded"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:hint="Email">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/login_id_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_person_black_24dp"
+                    android:drawablePadding="8dp"
+                    android:imeOptions="actionNext"
+                    android:inputType="textWebEmailAddress"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/password_id_input"
+                    android:text="kevin.vivor@gmail.com"
+                    tools:ignore="RtlHardcoded" />
+            </android.support.design.widget.TextInputLayout>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/id_layout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mot de passe">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/password_id_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
+                    android:drawablePadding="8dp"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:text="cXNH44GxgG"
+                    tools:ignore="RtlHardcoded" />
+            </android.support.design.widget.TextInputLayout>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/login"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Connexion" />
+
 
     </android.support.v7.widget.LinearLayoutCompat>
 
-    <android.support.v7.widget.AppCompatButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/login"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:text="login"/>
-
-
-</android.support.v7.widget.LinearLayoutCompat>
-
+</RelativeLayout>

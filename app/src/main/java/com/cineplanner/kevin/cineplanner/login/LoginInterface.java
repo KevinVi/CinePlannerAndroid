@@ -11,6 +11,10 @@ import retrofit2.http.POST;
 public interface LoginInterface {
     @POST("authenticate")
     Call<LoginModel> getLogin(@Header("login") String login, @Header("password") String password);
+
+
+    @POST("my-account")
+    Call<AccountModel> getAccountInfo(@Header("token") String login);
     // @GET("whoami")
     // @Headers({"X-Appscho-ServerId:154LWU"})
     // Call<LoginModel> getLogin();

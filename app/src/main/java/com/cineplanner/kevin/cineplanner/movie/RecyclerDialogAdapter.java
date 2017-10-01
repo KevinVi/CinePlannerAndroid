@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
 
@@ -37,6 +38,8 @@ public class RecyclerDialogAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         DialogViewHolder dialogViewHolder = (DialogViewHolder) holder;
         dialogViewHolder.getTitleMovie().setText(movies.get(position).getTitle());
+        dialogViewHolder.getDateMovie().setText(movies.get(position).getRelease_date());
+        Glide.with(context).load(movies.get(position).getPoster_path()).into(dialogViewHolder.getImageMovie());
         dialogViewHolder.getTitleMovie().setTag(movies.get(position));
 
     }
