@@ -70,12 +70,12 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     private DatePickerDialog datePickerDialog;
     Calendar cal;
     Calendar cal2;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     private static final String TAG = "EventDetailActivity";
     public static MovieModel movieSelected;
 
     public static void setMovieSelected(MovieModel movieSelected) {
-        EventActivity.movieSelected = movieSelected;
+        EventDetailActivity.movieSelected = movieSelected;
     }
 
     @Override
@@ -108,7 +108,6 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         cal = Calendar.getInstance();
         cal.setTimeInMillis(eventModel.getStart());
 
-        Glide.with(getApplicationContext()).load(eventModel.getMovie().getPoster_path()).into(imageView);
 
         cal2 = Calendar.getInstance();
         cal2.setTimeInMillis(eventModel.getEnd());
@@ -149,6 +148,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
 
         if (eventModel.getMovie() != null) {
             movie.setText(eventModel.getMovie().getTitle());
+            Glide.with(getApplicationContext()).load(eventModel.getMovie().getPoster_path()).into(imageView);
+
         }
         float rate = 0;
         for (NotationModel n :
@@ -270,21 +271,21 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                     if (nameEvent.isEmpty()) {
                         Toast.makeText(this, "L'événement doit avoir un nom", Toast.LENGTH_SHORT).show();
                     } else {
-                        String start = startDate + " " + startHour;
+                        String start = startDate.getText().toString() + " " + startHour.getText().toString();
                         Date startTime = new Date();
                         Log.d(TAG, "onClick: " + start);
                         try {
                             startTime = simpleDateFormat.parse(start);
                         } catch (ParseException ex) {
-                            System.out.println("Exception " + ex);
+                            Log.d(TAG, "onClick: " + ex);
                         }
-                        String end = endDate + " " + endHour;
+                        String end = endDate.getText().toString() + " " + endHour.getText().toString();
                         Log.d(TAG, "onClick: " + start);
                         Date endTime = new Date();
                         try {
                             endTime = simpleDateFormat.parse(end);
                         } catch (ParseException ex) {
-                            System.out.println("Exception " + ex);
+                            Log.d(TAG, "onClick: " + ex);
                         }
                         if (endTime.getTime() != 0 && startTime.getTime() != 0 && !nameEvent.isEmpty()) {
 
@@ -294,6 +295,11 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                             jsonObject.addProperty("start", startTime.getTime());
                             jsonObject.addProperty("end", endTime.getTime());
                             jsonObject.addProperty("id", eventModel.getId());
+                            if (movieSelected != null) {
+                                jsonObject.addProperty("idMovie", movieSelected.getId());
+                            } else {
+                                jsonObject.addProperty("idMovie", eventModel.getMovie().getId());
+                            }
                             Log.d(TAG, "onClick: " + jsonObject);
 
                             String url = BuildConfig.URL;
@@ -308,11 +314,11 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                                 public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
-                                        Toast.makeText(EventDetailActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(EventDetailActivity.this, "Evénement mis à jour", Toast.LENGTH_SHORT).show();
 
                                         Intent intent = new Intent();
                                         intent.putExtra("event", response.body());
-                                        setResult(2, intent);
+                                        setResult(3, intent);
                                         finish();
 
                                     } else {

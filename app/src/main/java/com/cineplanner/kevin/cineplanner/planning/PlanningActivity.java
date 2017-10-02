@@ -409,22 +409,22 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                     Log.d(TAG, "onActivityResult:events " + events);
                     getWeekView().notifyDatasetChanged();
 
-                }
-            }
-        } else if (requestCode == 4) {
-            if (data != null) {
-                if (data.hasExtra("event")) {
+                }else if (data.hasExtra("event")) {
                     EventModel event = (EventModel) data.getSerializableExtra("event");
                     Log.d(TAG, "onActivityResult: " + event.toString());
+                    EventModel oldEvent = eventMap.get(event.getId());
+                    this.events.remove(oldEvent.toWeekViewEvent());
+                    this.events.add(event.toWeekViewEvent());
+                    eventMap.put(event.getId(), event);
 
-                    EventModel eventRemove = eventMap.get(event.getId());
-                    this.events.remove(eventRemove.toWeekViewEvent());
-                    eventMap.values().removeAll(Collections.singleton(event));
                     Log.d(TAG, "onActivityResult:events " + events);
                     getWeekView().notifyDatasetChanged();
 
                 }
             }
+        } else if (requestCode == 4) {
+
+
         }
     }
 

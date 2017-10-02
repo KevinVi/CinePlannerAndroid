@@ -4,11 +4,13 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.EventActivity;
+import com.cineplanner.kevin.cineplanner.event.EventDetailActivity;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
 
 /**
@@ -19,6 +21,7 @@ public class DialogViewHolder extends RecyclerView.ViewHolder implements View.On
     private final AppCompatTextView titleMovie;
     private final AppCompatTextView dateMovie;
     private final AppCompatImageView imageMovie;
+    private static final String TAG = "DialogViewHolder";
 
 
     public DialogViewHolder(View itemView) {
@@ -44,8 +47,16 @@ public class DialogViewHolder extends RecyclerView.ViewHolder implements View.On
     @Override
     public void onClick(View view) {
         Toast.makeText(view.getContext(), getTitleMovie().getText().toString(), Toast.LENGTH_SHORT).show();
-        EventActivity.setMovieSelected((MovieModel) getTitleMovie().getTag());
-        DialogMovie.getMyDialog().dismiss();
-        EventActivity.movie.setText(getTitleMovie().getText().toString());
+        Log.d(TAG, "onClick: ");
+        if(EventDetailActivity.movie != null){
+
+            EventDetailActivity.setMovieSelected((MovieModel) getTitleMovie().getTag());
+            DialogMovie.getMyDialog().dismiss();
+            EventDetailActivity.movie.setText(getTitleMovie().getText().toString());
+        }else {
+            EventActivity.setMovieSelected((MovieModel) getTitleMovie().getTag());
+            DialogMovie.getMyDialog().dismiss();
+            EventActivity.movie.setText(getTitleMovie().getText().toString());
+        }
     }
 }
