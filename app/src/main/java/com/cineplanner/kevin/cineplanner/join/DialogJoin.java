@@ -1,4 +1,4 @@
-package com.cineplanner.kevin.cineplanner.movie;
+package com.cineplanner.kevin.cineplanner.join;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,31 +10,35 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.cineplanner.kevin.cineplanner.R;
-import com.cineplanner.kevin.cineplanner.event.MovieModel;
+import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
+import com.cineplanner.kevin.cineplanner.movie.RecyclerDialogAdapter;
+import com.cineplanner.kevin.cineplanner.team.TeamModel;
 
 import java.util.List;
 
 /**
- * Created by Kevin on 24/09/2017 for ZKY.
+ * Created by Kevin on 03/10/2017 for ZKY.
  */
 
-public class DialogMovie extends DialogFragment {
+public class DialogJoin  extends DialogFragment {
+
+
     private RecyclerView mRecyclerView;
     private RecyclerDialogAdapter adapter;
-    private List<MovieModel> movies;
+    private List<TeamModel> penddingTeams;
     private static Dialog myDialog;
     // this method create view for your Dialog
 
 
-    public static DialogMovie newInstance(List<MovieModel> movies) {
-        DialogMovie f = new DialogMovie();
+    public static DialogJoin newInstance(List<TeamModel> penddingTeams) {
+        DialogJoin f = new DialogJoin();
         // Supply num input as an argument.
-        f.setMovies(movies);
+        f.setPenddingTeams(penddingTeams);
         return f;
     }
 
-    public void setMovies(List<MovieModel> movies) {
-        this.movies = movies;
+    public void setPenddingTeams(List<TeamModel> movies) {
+        this.penddingTeams = movies;
     }
 
     @NonNull
@@ -46,10 +50,10 @@ public class DialogMovie extends DialogFragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         //setadapter
-        RecyclerDialogAdapter adapter = new RecyclerDialogAdapter(movies, getContext());
+        RecyclerDialogJoinAdapter adapter = new RecyclerDialogJoinAdapter(penddingTeams);
         mRecyclerView.setAdapter(adapter);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
-                .setTitle("Films")
+                .setTitle("Team")
                 .setView(rootView);
 
 

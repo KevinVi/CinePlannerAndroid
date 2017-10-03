@@ -89,6 +89,18 @@ public class EventModel implements Serializable {
         return notations;
     }
 
+    public void setComments(ArrayList<CommentModel> comments) {
+        this.comments = comments;
+    }
+
+    public void setNotations(ArrayList<NotationModel> notations) {
+        this.notations = notations;
+    }
+
+    public void setMovie(MovieModel movie) {
+        this.movie = movie;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

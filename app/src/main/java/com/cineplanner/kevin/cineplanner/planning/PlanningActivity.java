@@ -1,5 +1,6 @@
 package com.cineplanner.kevin.cineplanner.planning;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -22,19 +23,27 @@ import com.anupcowkur.reservoir.Reservoir;
 import com.cineplanner.kevin.cineplanner.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
 import com.cineplanner.kevin.cineplanner.CachingControlInterceptor;
+import com.cineplanner.kevin.cineplanner.InviteDialogFragment;
 import com.cineplanner.kevin.cineplanner.MyDialogFragment;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.EventActivity;
 import com.cineplanner.kevin.cineplanner.event.EventDetailActivity;
+import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import com.cineplanner.kevin.cineplanner.invite.InviteActivity;
+import com.cineplanner.kevin.cineplanner.join.DialogJoin;
 import com.cineplanner.kevin.cineplanner.login.LoginActivity;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
+import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
+import com.cineplanner.kevin.cineplanner.suggestion.DialogLearning;
+import com.cineplanner.kevin.cineplanner.suggestion.SuggestionModel;
 import com.cineplanner.kevin.cineplanner.team.EventModel;
 import com.cineplanner.kevin.cineplanner.team.TeamModel;
 import com.cineplanner.kevin.cineplanner.util.NetworkUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.Streams;
 import com.google.gson.reflect.TypeToken;
@@ -47,6 +56,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
@@ -75,6 +85,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
     public static ListView mDrawerList;
 
     private AppCompatButton addTeam;
+    private AppCompatButton joinTeam;
     private AppCompatButton logout;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -84,10 +95,12 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
     private FloatingActionButton event;
     private FloatingActionButton invite;
     private FloatingActionButton refresh;
+    private FloatingActionButton suggestion;
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
     private List<EventModel> currentEvents = new ArrayList<>();
     public static List<TeamModel> myTeams = new ArrayList<>();
+    private List<TeamModel> pendingTeams = new ArrayList<>();
     private BoxLoading alert;
 
 
@@ -108,6 +121,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         addTeam = (AppCompatButton) findViewById(R.id.add_team);
+        joinTeam = (AppCompatButton) findViewById(R.id.join_team);
         logout = (AppCompatButton) findViewById(R.id.logout);
         Log.d(TAG, "onCreate: " + mDrawerLayout);
         mTitle = mDrawerTitle = getTitle();
@@ -118,6 +132,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         event = (FloatingActionButton) findViewById(R.id.action_event);
         invite = (FloatingActionButton) findViewById(R.id.action_invite);
         refresh = (FloatingActionButton) findViewById(R.id.action_refresh);
+        suggestion = (FloatingActionButton) findViewById(R.id.action_suggestion);
 
 //        final FloatingActionButton programFab1 = new FloatingActionButton(this);
 //        programFab1.setButtonSize(FloatingActionButton.SIZE_MINI);
@@ -148,15 +163,64 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                 }
             }
         });
+        suggestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDrawerList.getCheckedItemPosition() >= 0) {
+                    setUiInProgress(getSupportFragmentManager(), alert, true);
+
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("idTeam", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+                    Log.d(TAG, "onClick: " + jsonObject);
+                    String url = BuildConfig.URL;
+                    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                    Retrofit.Builder retrofit = new Retrofit.Builder()
+                            .client(builder.build())
+                            .baseUrl(url)
+                            .addConverterFactory(GsonConverterFactory.create());
+                    EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+                    Call<List<MovieModel>> call = endpointInterface.learning(LoginTools.getToken(getApplicationContext()), jsonObject);
+                    call.enqueue(new Callback<List<MovieModel>>() {
+                        @Override
+                        public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
+                            Log.d(TAG, "onResponse: " + response);
+                            if (response.isSuccessful()) {
+                                Log.d(TAG, "onResponse:res  " + response.body().toString());
+                                Log.d(TAG, "onResponse:res size " + response.body().size());
+                                DialogLearning dFragment = DialogLearning.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+
+                                dFragment.show(getSupportFragmentManager(), "DialogLearning");
+                                Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+                                setUiInProgress(getSupportFragmentManager(), alert, false);
+                            } else {
+                                Log.d(TAG, "onResponse: " + response.raw());
+                                setUiInProgress(getSupportFragmentManager(), alert, false);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<MovieModel>> call, Throwable t) {
+                            Log.d(TAG, "onFailure: " + t.getMessage());
+                            setUiInProgress(getSupportFragmentManager(), alert, false);
+
+                            Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                } else {
+                    Toast.makeText(PlanningActivity.this, "Sélectionnez une team", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mDrawerList.getCheckedItemPosition() >= 0) {
-                    Intent intent = new Intent(getApplicationContext(), InviteActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(PlanningActivity.this, "invite", Toast.LENGTH_SHORT).show();
+                    InviteDialogFragment dFragment = InviteDialogFragment.newInstance(myTeams.get(mDrawerList.getCheckedItemPosition()));
+                    // Show DialogFragment
+                    dFragment.show(getSupportFragmentManager(), "MyDialogFragment");
                     Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
                 } else {
                     Toast.makeText(PlanningActivity.this, "Sélectionnez une team", Toast.LENGTH_SHORT).show();
@@ -210,6 +274,18 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
             }
         });
 
+        joinTeam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!pendingTeams.isEmpty()) {
+                    DialogJoin dFragment = DialogJoin.newInstance(pendingTeams);
+                    dFragment.show(getSupportFragmentManager(), "dialogjoin");
+                } else {
+                    Toast.makeText(PlanningActivity.this, "Aucune team à rejoindre", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -256,6 +332,37 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
 
     }
 
+    private void getPendingTeams() {
+        String url = BuildConfig.URL + "team/";
+
+        Retrofit.Builder retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(NetworkUtils.client(getApplicationContext(), "team"));
+        EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+        Call<List<TeamModel>> call = endpointInterface.getPending(LoginTools.getToken(getApplicationContext()));
+        call.enqueue(new Callback<List<TeamModel>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<TeamModel>> call, @NonNull Response<List<TeamModel>> response) {
+                Log.d(TAG, "onResponse: " + response);
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: " + response.body());
+                    pendingTeams = response.body();
+                    joinTeam.setText(getString(R.string.join_team) + "(" + pendingTeams.size() + ")");
+                    setUiInProgress(getSupportFragmentManager(), alert, false);
+                } else {
+                    Log.d(TAG, "onResponse: " + response.raw());
+                    Toast.makeText(PlanningActivity.this, "Impossible de récupéré les groupes", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<TeamModel>> call, @NonNull Throwable thwThrowable) {
+                Toast.makeText(PlanningActivity.this, "Impossible de récupéré les groupes", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void setMenu() {
         setUiInProgress(getSupportFragmentManager(), alert, true);
@@ -274,6 +381,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                 if (response.isSuccessful()) {
 
                     if (response.body() != null) {
+
                         if (!response.body().equals(myTeams))
                             Log.d(TAG, "onResponse: " + response.body().toString());
                         List<String> teamNames = new ArrayList<>();
@@ -316,7 +424,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                         } else {
                             mDrawerLayout.openDrawer(Gravity.START);
                         }
-                        setUiInProgress(getSupportFragmentManager(), alert, false);
+                        getPendingTeams();
 
 
                     }
@@ -409,7 +517,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                     Log.d(TAG, "onActivityResult:events " + events);
                     getWeekView().notifyDatasetChanged();
 
-                }else if (data.hasExtra("event")) {
+                } else if (data.hasExtra("event")) {
                     EventModel event = (EventModel) data.getSerializableExtra("event");
                     Log.d(TAG, "onActivityResult: " + event.toString());
                     EventModel oldEvent = eventMap.get(event.getId());
@@ -420,6 +528,9 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                     Log.d(TAG, "onActivityResult:events " + events);
                     getWeekView().notifyDatasetChanged();
 
+                } else if (data.hasExtra("finish")) {
+                    EventModel event = (EventModel) data.getSerializableExtra("finish");
+                    eventMap.put(event.getId(), event);
                 }
             }
         } else if (requestCode == 4) {

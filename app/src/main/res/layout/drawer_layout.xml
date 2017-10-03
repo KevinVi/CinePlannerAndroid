@@ -50,7 +50,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_team" />
-
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/join_team"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/join_team" />
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/logout"
             android:paddingTop="20dp"

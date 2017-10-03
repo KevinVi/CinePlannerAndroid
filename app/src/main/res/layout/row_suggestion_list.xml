@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_sug"
+        android:layout_gravity="center"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/title_sug"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/description_sug"
+            style="@style/Base.TextAppearance.AppCompat.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:gravity="center_vertical" />
+
+
+        <android.support.v7.widget.SwitchCompat
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:textOff="X"
+            app:showText="false"
+            android:checked="true"
+            android:id="@+id/switch_sug"
+            android:textOn="V"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v7.widget.LinearLayoutCompat>

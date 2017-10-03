@@ -47,9 +47,9 @@ public class DialogViewHolder extends RecyclerView.ViewHolder implements View.On
     @Override
     public void onClick(View view) {
         Toast.makeText(view.getContext(), getTitleMovie().getText().toString(), Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "onClick: ");
+        Log.d(TAG, "onClick: " + EventDetailActivity.movie);
+        Log.d(TAG, "onClick: " + EventActivity.movie);
         if(EventDetailActivity.movie != null){
-
             EventDetailActivity.setMovieSelected((MovieModel) getTitleMovie().getTag());
             DialogMovie.getMyDialog().dismiss();
             EventDetailActivity.movie.setText(getTitleMovie().getText().toString());

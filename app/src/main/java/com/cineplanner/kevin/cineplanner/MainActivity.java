@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 call.enqueue(new Callback<LoginModel>() {
                     @Override
                     public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                        Log.d(TAG, "onResponse: " + response);
-                        Log.d(TAG, "onResponse: " + response.body().getToken());
                         if (response.isSuccessful()) {
                             LoginTools.setToken(getApplicationContext(), response.body().getToken());
                             Intent intent = new Intent(getApplicationContext(), PlanningActivity.class);

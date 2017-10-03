@@ -3,11 +3,13 @@ package com.cineplanner.kevin.cineplanner.team;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Kevin on 01/10/2017 for ZKY.
  */
 
-public class NotationModel {
+public class NotationModel implements Serializable{
     @SerializedName("id")
     @Expose
     private int id;

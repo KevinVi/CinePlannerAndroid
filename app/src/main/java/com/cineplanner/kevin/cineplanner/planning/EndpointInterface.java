@@ -1,6 +1,7 @@
 package com.cineplanner.kevin.cineplanner.planning;
 
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
+import com.cineplanner.kevin.cineplanner.team.CommentModel;
 import com.cineplanner.kevin.cineplanner.team.EventModel;
 import com.cineplanner.kevin.cineplanner.team.NotationModel;
 import com.cineplanner.kevin.cineplanner.team.TeamModel;
@@ -26,6 +27,13 @@ public interface EndpointInterface {
     @POST("teams")
     Call<List<TeamModel>> getTeams(@Header("token") String login);
 
+    @POST("pending")
+    Call<List<TeamModel>> getPending(@Header("token") String login);
+
+    @POST("invite")
+    Call<Boolean> invite(@Header("token") String login,@Body JsonObject invite);
+
+
     @Headers("Content-Type: application/json")
     @POST("event/create")
     Call<EventModel> createEvent(@Header("token") String login, @Body JsonObject jsonObject);
@@ -41,4 +49,22 @@ public interface EndpointInterface {
     @Headers("Content-Type: application/json")
     @POST("notation/create")
     Call<NotationModel> notation(@Header("token") String login, @Body JsonObject jsonObject);
+
+    @Headers("Content-Type: application/json")
+    @POST("comment/create")
+    Call<CommentModel> comment(@Header("token") String login, @Body JsonObject jsonObject);
+
+    @Headers("Content-Type: application/json")
+    @POST("team/learning/result")
+    Call<Boolean> learningResult(@Header("token") String login, @Body JsonObject jsonObject);
+
+    @Headers("Content-Type: application/json")
+    @POST("team/learning")
+    Call<List<MovieModel>> learning(@Header("token") String login, @Body JsonObject jsonObject);
+
+
+    @Headers("Content-Type: application/json")
+    @POST("team/learning/suggestion")
+    Call<MovieModel> learningSuggestion(@Header("token") String login, @Body JsonObject jsonObject);
+
 }

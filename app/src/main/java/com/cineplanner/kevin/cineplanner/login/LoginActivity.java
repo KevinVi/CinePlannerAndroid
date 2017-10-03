@@ -94,7 +94,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                 Log.d(TAG, "onResponse: " + response);
-                Log.d(TAG, "onResponse: " + response.body().getToken());
                 if (response.isSuccessful()) {
                     LoginTools.saveLoginInfo(context, username, password);
                     LoginTools.setToken(context, response.body().getToken());

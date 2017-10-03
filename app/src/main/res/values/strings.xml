@@ -23,7 +23,9 @@
 
     <string name="your_teams">Vos Teams</string>
     <string name="no_team">Vous n\'avez pas encore de Team </string>
+    <string name="invite_team">Invité dans la Team</string>
     <string name="add_team">Créer une Team</string>
+    <string name="join_team">Rejoindre une Team</string>
     <string name="logout">Déconnexion</string>
     <string name="loading">Chargement</string>
 </resources>

@@ -19,11 +19,15 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cineplanner.kevin.cineplanner.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
+import com.cineplanner.kevin.cineplanner.CommentActivity;
 import com.cineplanner.kevin.cineplanner.R;
+import com.cineplanner.kevin.cineplanner.login.LoginActivity;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
 import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
+import com.cineplanner.kevin.cineplanner.team.CommentModel;
 import com.cineplanner.kevin.cineplanner.team.EventModel;
 import com.cineplanner.kevin.cineplanner.team.NotationModel;
 import com.cineplanner.kevin.cineplanner.util.NetworkUtils;
@@ -31,6 +35,7 @@ import com.google.gson.JsonObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +46,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.cineplanner.kevin.cineplanner.CommentActivity.COMMENTS;
+import static com.cineplanner.kevin.cineplanner.CommentActivity.EVENTID;
+import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 public class EventDetailActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
     public static String EVENT = "event";
@@ -64,6 +73,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     private int day;
     private int month;
     private int year;
+    private BoxLoading alert;
     private String nameTeam;
     private EventModel eventModel;
     private long id;
@@ -73,6 +83,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     private static final String TAG = "EventDetailActivity";
     public static MovieModel movieSelected;
+
 
     public static void setMovieSelected(MovieModel movieSelected) {
         EventDetailActivity.movieSelected = movieSelected;
@@ -97,6 +108,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
         imageView = (AppCompatImageView) findViewById(R.id.img_event);
         myRating = (RatingBar) findViewById(R.id.my_rating);
         teamRating = (RatingBar) findViewById(R.id.rating_team);
+
+        alert = new BoxLoading();
         Bundle bundle = getIntent().getExtras();
 
 
@@ -165,6 +178,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
             if (n.getAuthorId() == LoginTools.getIdUser(getApplicationContext())) {
                 submitRate.setEnabled(false);
                 myRating.setIsIndicator(true);
+                myRating.setRating(n.getNotation());
             }
         }
 
@@ -178,6 +192,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
             update.setOnClickListener(this);
             delete.setOnClickListener(this);
             search.setOnClickListener(this);
+            submitRate.setOnClickListener(this);
         } else {
             name.setEnabled(false);
             movie.setEnabled(false);
@@ -289,6 +304,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                         }
                         if (endTime.getTime() != 0 && startTime.getTime() != 0 && !nameEvent.isEmpty()) {
 
+                            setUiInProgress(getSupportFragmentManager(), alert, true);
 
                             JsonObject jsonObject = new JsonObject();
                             jsonObject.addProperty("name", nameEvent);
@@ -315,6 +331,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
                                         Toast.makeText(EventDetailActivity.this, "Evénement mis à jour", Toast.LENGTH_SHORT).show();
+                                        setUiInProgress(getSupportFragmentManager(), alert, false);
 
                                         Intent intent = new Intent();
                                         intent.putExtra("event", response.body());
@@ -323,6 +340,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
 
                                     } else {
                                         Toast.makeText(EventDetailActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
+                                        setUiInProgress(getSupportFragmentManager(), alert, false);
+
                                     }
                                 }
 
@@ -330,6 +349,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                                 public void onFailure(Call<EventModel> call, Throwable t) {
                                     Log.d(TAG, "onFailure: " + t.getMessage());
                                     Toast.makeText(EventDetailActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    setUiInProgress(getSupportFragmentManager(), alert, false);
 
                                 }
                             });
@@ -347,6 +367,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.search_movie:
                 if (!movie.getText().toString().isEmpty()) {
+                    setUiInProgress(getSupportFragmentManager(), alert, true);
+
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("query", movie.getText().toString());
                     String url = BuildConfig.URL;
@@ -363,8 +385,11 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                             if (response.isSuccessful()) {
                                 DialogMovie dFragment = DialogMovie.newInstance(response.body());
                                 dFragment.show(getSupportFragmentManager(), "tag");
+                                setUiInProgress(getSupportFragmentManager(), alert, false);
 
                             } else {
+                                setUiInProgress(getSupportFragmentManager(), alert, false);
+
                                 Toast.makeText(EventDetailActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -372,6 +397,8 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                         @Override
                         public void onFailure(Call<List<MovieModel>> call, Throwable t) {
                             Log.d(TAG, "onFailure: " + t.getMessage());
+                            setUiInProgress(getSupportFragmentManager(), alert, false);
+
                             Toast.makeText(EventDetailActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
@@ -407,6 +434,7 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                             }
                             rate = rate / eventModel.getNotations().size();
                             teamRating.setRating(rate);
+                            eventModel.getNotations().add(response.body());
 
                         } else {
                             Toast.makeText(EventDetailActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();
@@ -422,10 +450,47 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                 });
                 break;
             case R.id.comments:
+                Intent intentComment = new Intent(getApplicationContext(), CommentActivity.class);
+                intentComment.putExtra(COMMENTS, eventModel.getComments());
+                Log.d(TAG, "onClick: " + eventModel.getId());
+                intentComment.putExtra(EVENTID, eventModel.getId());
+                startActivityForResult(intentComment, 5);
 
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 5) {
+            if (data != null) {
+                if (data.hasExtra("comments")) {
+                    ArrayList<CommentModel> comment = (ArrayList<CommentModel>) data.getSerializableExtra("comments");
+                    eventModel.setComments(comment);
+                    comments.setText("Commentaires (" + eventModel.getComments().size() + ")");
+
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        movieSelected = null;
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: befor");
+        Intent intent = new Intent();
+        intent.putExtra("finish", eventModel);
+        setResult(3, intent);
+        finish();
+        super.onBackPressed();
     }
 }

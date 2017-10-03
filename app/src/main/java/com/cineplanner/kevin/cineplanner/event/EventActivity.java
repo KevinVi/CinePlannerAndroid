@@ -178,7 +178,6 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                 mTimePicker2.show();
                 break;
             case R.id.create:
-                setUiInProgress(getSupportFragmentManager(), alert, true);
 
                 if ((Integer.valueOf(startHour.getText().toString().replace(":", "")) >= Integer.valueOf(endHour.getText().toString().replace(":", "")))) {
                     endHour.setTextColor(Color.RED);
@@ -206,6 +205,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                         }
                         if (endTime.getTime() != 0 && startTime.getTime() != 0 && !nameEvent.isEmpty()) {
 
+                            setUiInProgress(getSupportFragmentManager(), alert, true);
 
                             JsonObject jsonObject = new JsonObject();
                             jsonObject.addProperty("name", nameEvent);
@@ -227,7 +227,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
                                 public void onResponse(Call<EventModel> call, Response<EventModel> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
-                                        Toast.makeText(EventActivity.this,"Evénement ajouté", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(EventActivity.this, "Evénement ajouté", Toast.LENGTH_SHORT).show();
 
                                         setUiInProgress(getSupportFragmentManager(), alert, false);
 
@@ -315,5 +315,12 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
         endDate.setText(
                 i2 + "/" + (i1 + 1) + "/"
                         + i);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        movieSelected = null;
+        super.onDestroy();
     }
 }

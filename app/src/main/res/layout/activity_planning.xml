@@ -37,25 +37,34 @@
         fab:fab_colorNormal="@color/colorPrimary">
 
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/action_suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_help_outline_black_24dp"
+            fab:fab_label="Suggestion"
+            fab:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/action_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_add_black_24dp"
             fab:fab_label="Ajouté événement"
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/action_invite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_black_24dp"
-            android:id="@+id/action_invite"
+            android:src="@drawable/ic_group_add_black_24dp"
             fab:fab_label="Invite"
             fab:fab_size="mini" />
+
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/action_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_autorenew_black_24dp"
-            android:id="@+id/action_refresh"
             fab:fab_label="Refresh"
             fab:fab_size="mini" />
     </com.github.clans.fab.FloatingActionMenu>

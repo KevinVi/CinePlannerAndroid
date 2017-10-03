@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:orientation="horizontal">
+
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/team_name"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="dzadza"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/team_creator"
+            style="@style/Base.TextAppearance.AppCompat.Caption"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:text="dzadza"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v7.widget.LinearLayoutCompat>
