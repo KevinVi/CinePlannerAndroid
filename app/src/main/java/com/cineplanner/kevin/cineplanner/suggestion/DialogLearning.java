@@ -41,7 +41,7 @@ import static com.cineplanner.kevin.cineplanner.login.LoginActivity.getToken;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 /**
- * Created by Kevin on 03/10/2017 for ZKY.
+ * Created by Kevin on 03/10/2017 for CinePlanner.
  */
 
 public class DialogLearning extends DialogFragment {

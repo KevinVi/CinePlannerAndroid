@@ -18,7 +18,7 @@ import java.util.List;
 import static com.cineplanner.kevin.cineplanner.suggestion.DialogLearning.suggestionModels;
 
 /**
- * Created by Kevin on 03/10/2017 for ZKY.
+ * Created by Kevin on 03/10/2017 for CinePlanner.
  */
 
 public class RecyclerDialogLearningAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

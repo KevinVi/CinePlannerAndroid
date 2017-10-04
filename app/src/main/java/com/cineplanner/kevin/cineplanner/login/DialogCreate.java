@@ -37,7 +37,7 @@ import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.myTeam
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 /**
- * Created by Kevin on 01/10/2017 for ZKY.
+ * Created by Kevin on 01/10/2017 for CinePlanner.
  */
 
 public class DialogCreate extends DialogFragment {

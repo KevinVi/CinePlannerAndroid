@@ -13,7 +13,7 @@ import com.cineplanner.kevin.cineplanner.team.TeamModel;
 import java.util.List;
 
 /**
- * Created by Kevin on 03/10/2017 for ZKY.
+ * Created by Kevin on 03/10/2017 for CinePlanner.
  */
 
 public class RecyclerDialogJoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

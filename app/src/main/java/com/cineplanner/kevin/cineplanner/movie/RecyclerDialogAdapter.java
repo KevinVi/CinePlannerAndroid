@@ -13,7 +13,7 @@ import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import java.util.List;
 
 /**
- * Created by Kevin on 24/09/2017 for ZKY.
+ * Created by Kevin on 24/09/2017 for CinePlanner.
  */
 
 public class RecyclerDialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

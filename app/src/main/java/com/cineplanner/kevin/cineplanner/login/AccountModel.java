@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Kevin on 01/10/2017 for ZKY.
+ * Created by Kevin on 01/10/2017 for CinePlanner.
  */
 
 public class AccountModel {

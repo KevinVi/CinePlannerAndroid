@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Created by Kevin on 18/09/2017 for ZKY.
+ * Created by Kevin on 18/09/2017 for CinePlanner.
  */
 
 public abstract class AbstractPlanning extends AppCompatActivity implements MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {

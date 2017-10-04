@@ -1,7 +1,7 @@
 package com.cineplanner.kevin.cineplanner;
 
 /**
- * Created by Kevin on 20/09/2017 for ZKY.
+ * Created by Kevin on 20/09/2017 for CinePlanner.
  */
 
 import android.app.Dialog;

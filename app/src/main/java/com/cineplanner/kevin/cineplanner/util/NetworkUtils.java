@@ -37,7 +37,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by Kevin on 22/09/2017 for ZKY.
+ * Created by Kevin on 22/09/2017 for CinePlanner.
  */
 
 public class NetworkUtils {

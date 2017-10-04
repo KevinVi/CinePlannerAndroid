@@ -49,7 +49,7 @@ import static com.cineplanner.kevin.cineplanner.event.EventActivity.YEAR;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 /**
- * Created by Kevin on 04/10/2017 for ZKY.
+ * Created by Kevin on 04/10/2017 for CinePlanner.
  */
 
 public class DialogLearningDisplay extends DialogFragment {

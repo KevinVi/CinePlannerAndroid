@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Created by Kevin on 20/09/2017 for ZKY.
+ * Created by Kevin on 20/09/2017 for CinePlanner.
  */
 
 public class LoginTools {

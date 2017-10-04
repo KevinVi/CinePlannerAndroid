@@ -37,7 +37,7 @@ import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.myTeam
 import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.pendingTeams;
 
 /**
- * Created by Kevin on 03/10/2017 for ZKY.
+ * Created by Kevin on 03/10/2017 for CinePlanner.
  */
 
 public class DialogJoinViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

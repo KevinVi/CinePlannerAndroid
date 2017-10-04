@@ -37,7 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 /**
- * Created by Kevin on 02/10/2017 for ZKY.
+ * Created by Kevin on 02/10/2017 for CinePlanner.
  */
 
 public class CommentActivity extends AppCompatActivity {

@@ -8,7 +8,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 /**
- * Created by Kevin on 17/09/2017 for ZKY.
+ * Created by Kevin on 17/09/2017 for CinePlanner.
  */
 
 public interface LoginInterface {

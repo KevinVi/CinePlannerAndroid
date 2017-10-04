@@ -34,7 +34,7 @@ import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.mDrawe
 import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.myTeams;
 
 /**
- * Created by Kevin on 03/10/2017 for ZKY.
+ * Created by Kevin on 03/10/2017 for CinePlanner.
  */
 
 public class InviteDialogFragment extends DialogFragment {

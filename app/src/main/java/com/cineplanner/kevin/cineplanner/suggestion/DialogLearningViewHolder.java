@@ -10,7 +10,7 @@ import android.view.View;
 import com.cineplanner.kevin.cineplanner.R;
 
 /**
- * Created by Kevin on 03/10/2017 for ZKY.
+ * Created by Kevin on 03/10/2017 for CinePlanner.
  */
 
 public class DialogLearningViewHolder extends RecyclerView.ViewHolder {

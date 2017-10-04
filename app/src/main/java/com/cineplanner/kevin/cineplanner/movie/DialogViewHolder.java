@@ -14,7 +14,7 @@ import com.cineplanner.kevin.cineplanner.event.EventDetailActivity;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
 
 /**
- * Created by Kevin on 24/09/2017 for ZKY.
+ * Created by Kevin on 24/09/2017 for CinePlanner.
  */
 
 public class DialogViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Created by Kevin on 20/09/2017 for ZKY.
+ * Created by Kevin on 20/09/2017 for CinePlanner.
  */
 
 public class EventModel implements Serializable {

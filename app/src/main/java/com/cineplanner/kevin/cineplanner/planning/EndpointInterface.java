@@ -16,7 +16,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
- * Created by Kevin on 20/09/2017 for ZKY.
+ * Created by Kevin on 20/09/2017 for CinePlanner.
  */
 
 public interface EndpointInterface {

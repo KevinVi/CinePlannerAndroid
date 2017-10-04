@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
- * Created by Kevin on 01/10/2017 for ZKY.
+ * Created by Kevin on 01/10/2017 for CinePlanner.
  */
 
 public class CommentModel implements Serializable {

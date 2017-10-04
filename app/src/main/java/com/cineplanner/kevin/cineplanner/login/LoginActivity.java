@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onFailure(Call<LoginModel> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 setUiInProgress(manager, alert, false);
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"Pas de connexion à internet", Toast.LENGTH_SHORT).show();
             }
         });
     }

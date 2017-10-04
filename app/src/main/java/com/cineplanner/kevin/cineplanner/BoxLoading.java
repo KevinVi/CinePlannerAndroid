@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by Kevin on 25/09/2017 for ZKY.
+ * Created by Kevin on 25/09/2017 for CinePlanner.
  */
 
 public class BoxLoading extends DialogFragment {
