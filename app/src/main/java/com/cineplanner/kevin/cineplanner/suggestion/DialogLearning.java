@@ -94,7 +94,7 @@ public class DialogLearning extends DialogFragment {
                             setUiInProgress(getFragmentManager(), alert, true);
 
                             JsonArray jsonArray = new JsonArray();
-                            for(Map.Entry<Integer, SuggestionModel> entry : suggestionModels.entrySet()) {
+                            for (Map.Entry<Integer, SuggestionModel> entry : suggestionModels.entrySet()) {
                                 JsonObject jsonObject = new JsonObject();
                                 jsonObject.addProperty("idTeam", teamId);
                                 jsonObject.addProperty("idMovie", entry.getValue().getIdMovie());
@@ -121,6 +121,7 @@ public class DialogLearning extends DialogFragment {
                                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
+                                        LoginTools.setLean(getContext(), true);
                                         setUiInProgress(getFragmentManager(), alert, false);
                                     } else {
                                         Log.d(TAG, "onResponse: " + response.raw());
