@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 } else {
                     setUiInProgress(manager, alert, false);
-                    Toast.makeText(context, response.raw().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"Indentifiant ou mot de passe incorrect", Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -22,8 +22,11 @@ import com.cineplanner.kevin.cineplanner.team.CommentModel;
 import com.cineplanner.kevin.cineplanner.util.NetworkUtils;
 import com.google.gson.JsonObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,6 +56,7 @@ public class CommentActivity extends AppCompatActivity {
     LinearLayoutCompat container;
     private long eventId;
 
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     ArrayAdapter<String> adapter;
 
     @Override
@@ -85,12 +89,17 @@ public class CommentActivity extends AppCompatActivity {
             AutoCompleteTextView comment = addView.findViewById(R.id.comment);
             AppCompatTextView creator = addView.findViewById(R.id.creator_comment);
             AppCompatTextView cate = addView.findViewById(R.id.date_comment);
+
             Log.d(TAG, "onCreate: " + com.toString());
             Log.d(TAG, "onCreate: " + creator);
 //            comment.setAdapter(adapter);
             comment.setText(com.getComment());
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.valueOf(com.getDateCreated()));
+            String date = simpleDateFormat.format(calendar.getTime());
             creator.setText(com.getAuthor());
-            cate.setText(com.getDateCreated());
+            cate.setText(date);
             container.addView(addView);
         }
 
@@ -130,7 +139,11 @@ public class CommentActivity extends AppCompatActivity {
 //            comment.setAdapter(adapter);
                                 comment.setText(com.getComment());
                                 creator.setText(com.getAuthor());
-                                cate.setText(com.getDateCreated());
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTimeInMillis(Long.valueOf(com.getDateCreated()));
+                                String date = simpleDateFormat.format(calendar.getTime());
+                                cate.setText(date);
                                 container.addView(addView);
                             } else {
                                 Toast.makeText(CommentActivity.this, response.raw().toString(), Toast.LENGTH_SHORT).show();

@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Kevin on 03/10/2017 for ZKY.
  */
 
-public class DialogJoin  extends DialogFragment {
+public class DialogJoin extends DialogFragment {
 
 
     private RecyclerView mRecyclerView;
@@ -54,6 +54,7 @@ public class DialogJoin  extends DialogFragment {
         mRecyclerView.setAdapter(adapter);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
                 .setTitle("Team")
+                .setMessage("Click sur la team que tu veux rejoindre")
                 .setView(rootView);
 
 

@@ -96,7 +96,6 @@ public class MyDialogFragment extends DialogFragment {
                                 @Override
                                 public void onFailure(Call<TeamModel> call, Throwable t) {
                                     Log.d(TAG, "onFailure: " + t.getMessage());
-                                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
                                 }
                             });

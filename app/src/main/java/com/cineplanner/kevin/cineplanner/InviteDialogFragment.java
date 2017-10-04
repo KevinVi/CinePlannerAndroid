@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
+import com.cineplanner.kevin.cineplanner.planning.PlanningActivity;
 import com.cineplanner.kevin.cineplanner.team.TeamModel;
 import com.google.gson.JsonObject;
 
@@ -42,16 +43,18 @@ public class InviteDialogFragment extends DialogFragment {
 
     private TeamModel myTeam;
     private static Dialog myDialog;
+    private PlanningActivity activity;
 
     String inMyTeam = "";
     // this method create view for your Dialog
 
 
-    public static InviteDialogFragment newInstance(TeamModel teamModel) {
+    public static InviteDialogFragment newInstance(TeamModel teamModel, PlanningActivity activity) {
         InviteDialogFragment f = new InviteDialogFragment();
 
         // Supply num input as an argument.
         f.setMyTeam(teamModel);
+        f.setActivity(activity);
 
         return f;
     }
@@ -60,12 +63,16 @@ public class InviteDialogFragment extends DialogFragment {
         this.myTeam = myTeam;
     }
 
+    public void setActivity(PlanningActivity activity) {
+        this.activity = activity;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         View rootView = View.inflate(getContext(), R.layout.fragment_invite, null);
-        final AppCompatEditText editText = rootView.findViewById(R.id.edit_team);
+        final AppCompatEditText editText = rootView.findViewById(R.id.email_team);
         final AppCompatTextView pending = rootView.findViewById(R.id.pending);
 
         for (String s :
@@ -76,7 +83,7 @@ public class InviteDialogFragment extends DialogFragment {
                 inMyTeam += "\n" + s;
             }
         }
-        if (inMyTeam.isEmpty()){
+        if (inMyTeam.isEmpty()) {
             inMyTeam = "Aucune";
         }
         pending.setText(inMyTeam);
@@ -92,7 +99,7 @@ public class InviteDialogFragment extends DialogFragment {
                         final String invitedName = editText.getText().toString();
                         if (!invitedName.isEmpty() && !inMyTeam.contains(invitedName)) {
                             JsonObject jsonObject = new JsonObject();
-                            jsonObject.addProperty("string", invitedName);
+                            jsonObject.addProperty("string", invitedName.toLowerCase().trim());
                             jsonObject.addProperty("teamId", myTeam.getId());
 
 
@@ -111,17 +118,17 @@ public class InviteDialogFragment extends DialogFragment {
                                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
-                                        Toast.makeText(getContext(), "Invitation envoyé", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(activity, "Invitation envoyé", Toast.LENGTH_SHORT).show();
 
                                     } else {
-                                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(activity, response.message(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<Boolean> call, Throwable t) {
                                     Log.d(TAG, "onFailure: " + t.getMessage());
-                                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity, t.getMessage(), Toast.LENGTH_SHORT).show();
 
                                 }
                             });

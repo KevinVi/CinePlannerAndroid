@@ -200,6 +200,15 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
             update.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
         }
+        if (!NetworkUtils.isOnline(getApplicationContext())) {
+            name.setEnabled(false);
+            movie.setEnabled(false);
+            search.setVisibility(View.GONE);
+            update.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
+            submitRate.setEnabled(false);
+            myRating.setIsIndicator(true);
+        }
 
     }
 

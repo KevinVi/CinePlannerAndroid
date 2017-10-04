@@ -86,7 +86,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
     public static ListView mDrawerList;
 
     private AppCompatButton addTeam;
-    private AppCompatButton joinTeam;
+    public static AppCompatButton joinTeam;
     private AppCompatButton logout;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -101,7 +101,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
     private List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
     private List<EventModel> currentEvents = new ArrayList<>();
     public static List<TeamModel> myTeams = new ArrayList<>();
-    private List<TeamModel> pendingTeams = new ArrayList<>();
+    public static List<TeamModel> pendingTeams = new ArrayList<>();
     private BoxLoading alert;
 
 
@@ -168,49 +168,54 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         suggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mDrawerList.getCheckedItemPosition() >= 0) {
-                    setUiInProgress(getSupportFragmentManager(), alert, true);
 
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("id", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
-                    Log.d(TAG, "onClick: " + jsonObject);
-                    String url = BuildConfig.URL;
-                    OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                    Retrofit.Builder retrofit = new Retrofit.Builder()
-                            .client(builder.build())
-                            .baseUrl(url)
-                            .addConverterFactory(GsonConverterFactory.create());
-                    EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
-                    Call<List<MovieModel>> call = endpointInterface.learning(LoginTools.getToken(getApplicationContext()), jsonObject);
-                    call.enqueue(new Callback<List<MovieModel>>() {
-                        @Override
-                        public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
-                            Log.d(TAG, "onResponse: " + response);
-                            if (response.isSuccessful()) {
-                                Log.d(TAG, "onResponse:res  " + response.body().toString());
-                                Log.d(TAG, "onResponse:res size " + response.body().size());
-                                DialogLearning dFragment = DialogLearning.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+                if (NetworkUtils.isOnline(getApplicationContext())) {
+                    if (mDrawerList.getCheckedItemPosition() >= 0) {
+                        setUiInProgress(getSupportFragmentManager(), alert, true);
 
-                                dFragment.show(getSupportFragmentManager(), "DialogLearning");
-                                Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
-                                setUiInProgress(getSupportFragmentManager(), alert, false);
-                            } else {
-                                Log.d(TAG, "onResponse: " + response.raw());
-                                suggestionDisplay();
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("id", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+                        Log.d(TAG, "onClick: " + jsonObject);
+                        String url = BuildConfig.URL;
+                        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                        Retrofit.Builder retrofit = new Retrofit.Builder()
+                                .client(builder.build())
+                                .baseUrl(url)
+                                .addConverterFactory(GsonConverterFactory.create());
+                        EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+                        Call<List<MovieModel>> call = endpointInterface.learning(LoginTools.getToken(getApplicationContext()), jsonObject);
+                        call.enqueue(new Callback<List<MovieModel>>() {
+                            @Override
+                            public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
+                                Log.d(TAG, "onResponse: " + response);
+                                if (response.isSuccessful()) {
+                                    Log.d(TAG, "onResponse:res  " + response.body().toString());
+                                    Log.d(TAG, "onResponse:res size " + response.body().size());
+                                    DialogLearning dFragment = DialogLearning.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+
+                                    dFragment.show(getSupportFragmentManager(), "DialogLearning");
+                                    Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+                                    setUiInProgress(getSupportFragmentManager(), alert, false);
+                                } else {
+                                    Log.d(TAG, "onResponse: " + response.raw());
+                                    suggestionDisplay();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<List<MovieModel>> call, Throwable t) {
-                            Log.d(TAG, "onFailure: " + t.getMessage());
-                            setUiInProgress(getSupportFragmentManager(), alert, false);
+                            @Override
+                            public void onFailure(Call<List<MovieModel>> call, Throwable t) {
+                                Log.d(TAG, "onFailure: " + t.getMessage());
+                                setUiInProgress(getSupportFragmentManager(), alert, false);
 
-                            Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
-                        }
-                    });
+                            }
+                        });
+                    } else {
+                        Toast.makeText(PlanningActivity.this, "Sélectionnez une team", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(PlanningActivity.this, "Sélectionnez une team", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PlanningActivity.this, "Internet necessaire pour proposé un événement", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -219,21 +224,26 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mDrawerList.getCheckedItemPosition() >= 0) {
-                    InviteDialogFragment dFragment = InviteDialogFragment.newInstance(myTeams.get(mDrawerList.getCheckedItemPosition()));
-                    // Show DialogFragment
-                    dFragment.show(getSupportFragmentManager(), "MyDialogFragment");
-                    Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+
+                if (NetworkUtils.isOnline(getApplicationContext())) {
+                    if (mDrawerList.getCheckedItemPosition() >= 0) {
+                        InviteDialogFragment dFragment = InviteDialogFragment.newInstance(myTeams.get(mDrawerList.getCheckedItemPosition()), PlanningActivity.this);
+                        // Show DialogFragment
+                        dFragment.show(getSupportFragmentManager(), "MyDialogFragment");
+                        Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+                    } else {
+                        Toast.makeText(PlanningActivity.this, "Sélectionnez une team", Toast.LENGTH_SHORT).show();
+                    }
+                    Type resultType = new TypeToken<List<TeamModel>>() {
+                    }.getType();
+                    try {
+                        List<TeamModel> teams = Reservoir.get("teams", resultType);
+                        Log.d(TAG, "onClick: " + teams);
+                    } catch (IOException e) {
+                        //failure
+                    }
                 } else {
-                    Toast.makeText(PlanningActivity.this, "Sélectionnez une team", Toast.LENGTH_SHORT).show();
-                }
-                Type resultType = new TypeToken<List<TeamModel>>() {
-                }.getType();
-                try {
-                    List<TeamModel> teams = Reservoir.get("teams", resultType);
-                    Log.d(TAG, "onClick: " + teams);
-                } catch (IOException e) {
-                    //failure
+                    Toast.makeText(PlanningActivity.this, "Internet necessaire pour invité", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -262,9 +272,14 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         addTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyDialogFragment dFragment = new MyDialogFragment();
-                // Show DialogFragment
-                dFragment.show(getSupportFragmentManager(), "MyDialogFragment");
+
+                if (NetworkUtils.isOnline(getApplicationContext())) {
+                    MyDialogFragment dFragment = new MyDialogFragment();
+                    // Show DialogFragment
+                    dFragment.show(getSupportFragmentManager(), "MyDialogFragment");
+                } else {
+                    Toast.makeText(PlanningActivity.this, "Internet necessaire pour ajouté une team", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
@@ -279,11 +294,16 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         joinTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!pendingTeams.isEmpty()) {
-                    DialogJoin dFragment = DialogJoin.newInstance(pendingTeams);
-                    dFragment.show(getSupportFragmentManager(), "dialogjoin");
+
+                if (NetworkUtils.isOnline(getApplicationContext())) {
+                    if (!pendingTeams.isEmpty()) {
+                        DialogJoin dFragment = DialogJoin.newInstance(pendingTeams);
+                        dFragment.show(getSupportFragmentManager(), "dialogjoin");
+                    } else {
+                        Toast.makeText(PlanningActivity.this, "Aucune team à rejoindre", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(PlanningActivity.this, "Aucune team à rejoindre", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PlanningActivity.this, "Internet necessaire pour rejoindre une team", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -545,13 +565,17 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                 if (data.hasExtra("event")) {
                     EventModel event = (EventModel) data.getSerializableExtra("event");
                     Log.d(TAG, "onActivityResult: " + event.toString());
+                    myTeams.get(mDrawerList.getCheckedItemPosition()).getEvents().add(event);
                     this.events.add(event.toWeekViewEvent());
 
                     eventMap.put(event.getId(), event);
 
+
                     Log.d(TAG, "onActivityResult:events " + events);
                     getWeekView().notifyDatasetChanged();
-
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(event.getStart());
+                    getWeekView().goToDate(cal);
 
                     JsonArray jsonArray = new JsonArray();
                     JsonObject jsonObject = new JsonObject();
@@ -612,13 +636,21 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                     EventModel event = (EventModel) data.getSerializableExtra("event");
                     Log.d(TAG, "onActivityResult: " + event.toString());
                     EventModel oldEvent = eventMap.get(event.getId());
+
+
+                    myTeams.get(mDrawerList.getCheckedItemPosition()).getEvents().remove(oldEvent);
+                    myTeams.get(mDrawerList.getCheckedItemPosition()).getEvents().add(event);
                     this.events.remove(oldEvent.toWeekViewEvent());
                     this.events.add(event.toWeekViewEvent());
                     eventMap.put(event.getId(), event);
 
                     Log.d(TAG, "onActivityResult:events " + events);
+
                     getWeekView().notifyDatasetChanged();
 
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(event.getStart());
+                    getWeekView().goToDate(cal);
                 } else if (data.hasExtra("finish")) {
                     EventModel event = (EventModel) data.getSerializableExtra("finish");
                     eventMap.put(event.getId(), event);

@@ -33,6 +33,8 @@ public interface EndpointInterface {
     @POST("invite")
     Call<Boolean> invite(@Header("token") String login,@Body JsonObject invite);
 
+    @POST("join")
+    Call<Boolean> join(@Header("token") String login,@Body JsonObject invite);
 
     @Headers("Content-Type: application/json")
     @POST("event/create")
