@@ -45,6 +45,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
     public static String DAY = "day";
     public static String MONTH = "month";
     public static String YEAR = "year";
+    public static String MOVIE = "movie";
     public static String TEAM = "team";
     private AppCompatEditText name;
     public static AppCompatEditText movie;
@@ -59,6 +60,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
     private int year;
     private long id;
     private BoxLoading alert;
+    private MovieModel movieModel;
     private static final String TAG = "EventActivity";
     private DatePickerDialog datePickerDialog;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
@@ -90,7 +92,15 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
         month = bundle.getInt(MONTH);
         year = bundle.getInt(YEAR);
         id = bundle.getLong(TEAM);
+        if (bundle.containsKey(MOVIE)) {
+            movieModel = (MovieModel) bundle.get(MOVIE);
+            movieSelected = movieModel;
+            movie.setText(movieModel.getTitle());
+        }
         Log.d(TAG, "onCreate: " + id);
+        Log.d(TAG, "onCreate:d " + day);
+        Log.d(TAG, "onCreate:m " + month);
+        Log.d(TAG, "onCreate:y " + year);
         datePickerDialog = new DatePickerDialog(
                 this, this, year, month, day);
 

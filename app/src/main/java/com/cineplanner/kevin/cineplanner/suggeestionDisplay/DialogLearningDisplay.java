@@ -44,6 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.cineplanner.kevin.cineplanner.event.EventActivity.DAY;
 import static com.cineplanner.kevin.cineplanner.event.EventActivity.MONTH;
+import static com.cineplanner.kevin.cineplanner.event.EventActivity.MOVIE;
 import static com.cineplanner.kevin.cineplanner.event.EventActivity.YEAR;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
@@ -63,6 +64,7 @@ public class DialogLearningDisplay extends DialogFragment {
 
     public static DialogLearningDisplay newInstance(MovieModel movie, int teamId, PlanningActivity activity) {
         DialogLearningDisplay f = new DialogLearningDisplay();
+        Log.d(TAG, "newInstance: ");
         // Supply num input as an argument.
         f.setMovie(movie);
         f.setTeamId(teamId);
@@ -86,15 +88,22 @@ public class DialogLearningDisplay extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        Log.d(TAG, "onCreateDialog: learning");
         alert = new BoxLoading();
         View rootView = View.inflate(getContext(), R.layout.dialog_suggestion_display, null);
         AppCompatTextView title = rootView.findViewById(R.id.title_sug);
         AppCompatTextView description = rootView.findViewById(R.id.description_sug);
+        AppCompatTextView release = rootView.findViewById(R.id.date);
         AppCompatImageView img = rootView.findViewById(R.id.image_sug);
 
         title.setText(movie.getTitle());
-        description.setText(movie.getOverview());
+        if (movie.getOverview().isEmpty()) {
+            description.setText("Aucune description disponible");
+        } else {
+            description.setText(movie.getOverview());
+        }
         Glide.with(getContext()).load(movie.getPoster_path()).into(img);
+        release.setText(movie.getRelease_date());
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
                 .setTitle("Suggestion")
@@ -103,10 +112,17 @@ public class DialogLearningDisplay extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent = new Intent(activity, EventActivity.class);
                         String[] tabDate = movie.getRelease_date().split("-");
-                        intent.putExtra(MONTH, tabDate[1]);
-                        intent.putExtra(DAY, tabDate[2]);
-                        intent.putExtra(YEAR, tabDate[0]);
-                        intent.putExtra(EventActivity.TEAM, teamId);
+                        Log.d(TAG, "onClick: " + tabDate.length);
+                        Log.d(TAG, "onClick: " + tabDate[0]);
+                        for (String s :
+                                tabDate) {
+                            Log.d(TAG, "onClick: " + s);
+                        }
+                        intent.putExtra(MONTH, Integer.valueOf(tabDate[1]));
+                        intent.putExtra(DAY, Integer.valueOf(tabDate[2]));
+                        intent.putExtra(YEAR, Integer.valueOf(tabDate[0]));
+                        intent.putExtra(MOVIE, movie);
+                        intent.putExtra(EventActivity.TEAM, Long.valueOf(teamId));
                         activity.startActivityForResult(intent, 2);
                     }
                 })
@@ -119,7 +135,7 @@ public class DialogLearningDisplay extends DialogFragment {
                         JsonObject jsonObject = new JsonObject();
                         jsonObject.addProperty("idTeam", teamId);
                         jsonObject.addProperty("idMovie", movie.getId());
-                        jsonObject.addProperty("like", false);
+                        jsonObject.addProperty("liked", false);
 
                         jsonArray.add(jsonObject);
                         // do what you have to do here

@@ -51,30 +51,7 @@ public class LoginTools {
         return loginPreferences.getInt(PREF_USER_ID, 0);
     }
 
-    /**
-     * Get learn for sharedPreferences.
-     *
-     * @param context need for SharedPreferences
-     * @return picture
-     */
-    public static boolean getLearn(Context context) {
-        final SharedPreferences loginPreferences = context.getSharedPreferences(PREF_USER, Context.MODE_PRIVATE);
-        return loginPreferences.getBoolean(PREF_LEARN, false);
-    }
 
-
-    /**
-     * set learn for sharedPreferences.
-     *
-     * @param context need for SharedPreferences
-     * @return picture
-     */
-    public static void setLean(Context context, boolean learn) {
-        final SharedPreferences loginPreferences = context.getSharedPreferences(PREF_USER, Context.MODE_PRIVATE);
-        final SharedPreferences.Editor prefsEditor = loginPreferences.edit();
-        prefsEditor.putBoolean(PREF_LEARN, learn);
-        prefsEditor.apply();
-    }
 
     /**
      * Save user password and logn in sharedPreferences.

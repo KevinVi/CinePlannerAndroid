@@ -98,7 +98,7 @@ public class DialogLearning extends DialogFragment {
                                 JsonObject jsonObject = new JsonObject();
                                 jsonObject.addProperty("idTeam", teamId);
                                 jsonObject.addProperty("idMovie", entry.getValue().getIdMovie());
-                                jsonObject.addProperty("like", entry.getValue().isLiked());
+                                jsonObject.addProperty("liked", entry.getValue().isLiked());
 
                                 jsonArray.add(jsonObject);
                                 // do what you have to do here
@@ -107,6 +107,7 @@ public class DialogLearning extends DialogFragment {
                             JsonObject object = new JsonObject();
                             object.add("content", jsonArray);
                             Log.d(TAG, "onClick: " + object);
+                            Log.d(TAG, "onClick: " + object.toString());
                             String url = BuildConfig.URL;
                             OkHttpClient.Builder builder = new OkHttpClient.Builder();
                             final Context context = getContext();
@@ -121,7 +122,6 @@ public class DialogLearning extends DialogFragment {
                                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
-                                        LoginTools.setLean(getContext(), true);
                                         setUiInProgress(getFragmentManager(), alert, false);
                                     } else {
                                         Log.d(TAG, "onResponse: " + response.raw());

@@ -117,6 +117,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         } catch (IOException e) {
             //failure
         }
+        myTeams = new ArrayList<>();
         // Show a toast message about the touched event.
         getmWeekView().setOnEventClickListener(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -170,86 +171,44 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                 if (mDrawerList.getCheckedItemPosition() >= 0) {
                     setUiInProgress(getSupportFragmentManager(), alert, true);
 
-                    if (!LoginTools.getLearn(getApplicationContext())) {
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("id", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
-                        Log.d(TAG, "onClick: " + jsonObject);
-                        String url = BuildConfig.URL;
-                        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                        Retrofit.Builder retrofit = new Retrofit.Builder()
-                                .client(builder.build())
-                                .baseUrl(url)
-                                .addConverterFactory(GsonConverterFactory.create());
-                        EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
-                        Call<List<MovieModel>> call = endpointInterface.learning(LoginTools.getToken(getApplicationContext()), jsonObject);
-                        call.enqueue(new Callback<List<MovieModel>>() {
-                            @Override
-                            public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
-                                Log.d(TAG, "onResponse: " + response);
-                                if (response.isSuccessful()) {
-                                    Log.d(TAG, "onResponse:res  " + response.body().toString());
-                                    Log.d(TAG, "onResponse:res size " + response.body().size());
-                                    DialogLearning dFragment = DialogLearning.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("id", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+                    Log.d(TAG, "onClick: " + jsonObject);
+                    String url = BuildConfig.URL;
+                    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                    Retrofit.Builder retrofit = new Retrofit.Builder()
+                            .client(builder.build())
+                            .baseUrl(url)
+                            .addConverterFactory(GsonConverterFactory.create());
+                    EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+                    Call<List<MovieModel>> call = endpointInterface.learning(LoginTools.getToken(getApplicationContext()), jsonObject);
+                    call.enqueue(new Callback<List<MovieModel>>() {
+                        @Override
+                        public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
+                            Log.d(TAG, "onResponse: " + response);
+                            if (response.isSuccessful()) {
+                                Log.d(TAG, "onResponse:res  " + response.body().toString());
+                                Log.d(TAG, "onResponse:res size " + response.body().size());
+                                DialogLearning dFragment = DialogLearning.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
 
-                                    dFragment.show(getSupportFragmentManager(), "DialogLearning");
-                                    Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
-                                    setUiInProgress(getSupportFragmentManager(), alert, false);
-                                } else {
-                                    Log.d(TAG, "onResponse: " + response.raw());
-                                    LoginTools.setLean(getApplicationContext(), true);
-                                    setUiInProgress(getSupportFragmentManager(), alert, false);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<MovieModel>> call, Throwable t) {
-                                Log.d(TAG, "onFailure: " + t.getMessage());
+                                dFragment.show(getSupportFragmentManager(), "DialogLearning");
+                                Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
                                 setUiInProgress(getSupportFragmentManager(), alert, false);
-
-                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
+                            } else {
+                                Log.d(TAG, "onResponse: " + response.raw());
+                                suggestionDisplay();
                             }
-                        });
-                    } else {
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("id", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
-                        Log.d(TAG, "onClick: " + jsonObject);
-                        String url = BuildConfig.URL;
-                        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                        Retrofit.Builder retrofit = new Retrofit.Builder()
-                                .client(builder.build())
-                                .baseUrl(url)
-                                .addConverterFactory(GsonConverterFactory.create());
-                        EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
-                        Call<MovieModel> call = endpointInterface.learningSuggestion(LoginTools.getToken(getApplicationContext()), jsonObject);
-                        call.enqueue(new Callback<MovieModel>() {
-                            @Override
-                            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
-                                Log.d(TAG, "onResponse: " + response);
-                                if (response.isSuccessful()) {
-                                    Log.d(TAG, "onResponse:res  " + response.body().toString());
-                                    setUiInProgress(getSupportFragmentManager(), alert, false);
-                                    DialogLearningDisplay dFragment = DialogLearningDisplay.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId(), PlanningActivity.this);
+                        }
 
-                                    dFragment.show(getSupportFragmentManager(), "DialogLearningDisplay");
-                                    Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Aucune Suggestion", Toast.LENGTH_SHORT).show();
-                                    Log.d(TAG, "onResponse: " + response.raw());
-                                    setUiInProgress(getSupportFragmentManager(), alert, false);
-                                }
-                            }
+                        @Override
+                        public void onFailure(Call<List<MovieModel>> call, Throwable t) {
+                            Log.d(TAG, "onFailure: " + t.getMessage());
+                            setUiInProgress(getSupportFragmentManager(), alert, false);
 
-                            @Override
-                            public void onFailure(Call<MovieModel> call, Throwable t) {
-                                Log.d(TAG, "onFailure: " + t.getMessage());
-                                setUiInProgress(getSupportFragmentManager(), alert, false);
+                            Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
-                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-                    }
+                        }
+                    });
                 } else {
                     Toast.makeText(PlanningActivity.this, "Sélectionnez une team", Toast.LENGTH_SHORT).show();
                 }
@@ -377,6 +336,52 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         });
 
 
+    }
+
+    private void suggestionDisplay() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+        Log.d(TAG, "onClick: " + jsonObject);
+        String url = BuildConfig.URL;
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        Retrofit.Builder retrofit = new Retrofit.Builder()
+                .client(builder.build())
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create());
+        EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+        Call<MovieModel> call = endpointInterface.learningSuggestion(LoginTools.getToken(getApplicationContext()), jsonObject);
+        call.enqueue(new Callback<MovieModel>() {
+            @Override
+            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+                Log.d(TAG, "onResponse: " + response);
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse:res  " + response.body().toString());
+                    setUiInProgress(getSupportFragmentManager(), alert, false);
+                    if (response.body().getId() == 0) {
+                        Toast.makeText(getApplicationContext(), "Aucune Suggestion", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        DialogLearningDisplay dFragment = DialogLearningDisplay.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId(), PlanningActivity.this);
+
+                        dFragment.show(getSupportFragmentManager(), "DialogLearningDisplay");
+                    }
+                    Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
+                } else {
+                    Toast.makeText(getApplicationContext(), "Aucune Suggestion", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onResponse: " + response.raw());
+                    setUiInProgress(getSupportFragmentManager(), alert, false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieModel> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                setUiInProgress(getSupportFragmentManager(), alert, false);
+
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     private void getPendingTeams() {
@@ -546,6 +551,45 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
 
                     Log.d(TAG, "onActivityResult:events " + events);
                     getWeekView().notifyDatasetChanged();
+
+
+                    JsonArray jsonArray = new JsonArray();
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("idTeam", myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
+                    jsonObject.addProperty("idMovie", event.getMovie().getId());
+                    jsonObject.addProperty("liked", true);
+
+                    jsonArray.add(jsonObject);
+                    // do what you have to do here
+                    // In your case, an other loop.
+
+                    JsonObject object = new JsonObject();
+                    object.add("content", jsonArray);
+                    Log.d(TAG, "onClick: " + object);
+                    String url = BuildConfig.URL;
+                    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                    Retrofit.Builder retrofit = new Retrofit.Builder()
+                            .client(builder.build())
+                            .baseUrl(url)
+                            .addConverterFactory(GsonConverterFactory.create());
+                    EndpointInterface endpointInterface = retrofit.build().create(EndpointInterface.class);
+                    Call<Boolean> call = endpointInterface.learningResult(LoginTools.getToken(getApplicationContext()), object);
+                    call.enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            Log.d(TAG, "onResponse: " + response);
+                            if (response.isSuccessful()) {
+                            } else {
+                                Log.d(TAG, "onResponse: " + response.raw());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            Log.d(TAG, "onFailure: " + t.getMessage());
+
+                        }
+                    });
 
                 }
             }
