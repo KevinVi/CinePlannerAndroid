@@ -33,15 +33,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.cineplanner.kevin.cineplanner.invite.InviteActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name="com.cineplanner.kevin.cineplanner.event.EventDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.cineplanner.kevin.cineplanner.CommentActivity"
+            android:name="com.cineplanner.kevin.cineplanner.comment.CommentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>

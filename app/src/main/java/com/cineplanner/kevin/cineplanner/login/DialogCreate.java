@@ -10,19 +10,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.cineplanner.kevin.cineplanner.BoxLoading;
+import com.cineplanner.kevin.cineplanner.util.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
 import com.cineplanner.kevin.cineplanner.R;
-import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
-import com.cineplanner.kevin.cineplanner.team.TeamModel;
 import com.google.gson.JsonObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -32,8 +26,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.cineplanner.kevin.cineplanner.login.LoginActivity.getToken;
-import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.mDrawerList;
-import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.myTeams;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 /**
@@ -41,9 +33,8 @@ import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgres
  */
 
 public class DialogCreate extends DialogFragment {
-    private BoxLoading alert;
-
     private static final String TAG = "DialogCreate";
+    private BoxLoading alert;
 
     @NonNull
     @Override
@@ -108,7 +99,7 @@ public class DialogCreate extends DialogFragment {
                                 public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
                                     Log.d(TAG, "onResponse: " + response);
                                     if (response.isSuccessful()) {
-                                        getToken(getContext(), username, password, getFragmentManager(), alert,true);
+                                        getToken(getContext(), username, password, getFragmentManager(), alert, true);
                                     } else {
                                         Log.d(TAG, "onResponse: " + response.raw());
                                         setUiInProgress(getFragmentManager(), alert, false);
@@ -129,7 +120,7 @@ public class DialogCreate extends DialogFragment {
 
                         }
                         //Dismiss once everything is OK.
-                     //   dialog.dismiss();
+                        //   dialog.dismiss();
                     }
                 });
             }

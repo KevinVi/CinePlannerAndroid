@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.cineplanner.kevin.cineplanner.R;
-import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.movie.RecyclerDialogAdapter;
 import com.cineplanner.kevin.cineplanner.team.TeamModel;
 
@@ -23,18 +22,21 @@ import java.util.List;
 public class DialogJoin extends DialogFragment {
 
 
+    private static Dialog myDialog;
     private RecyclerView mRecyclerView;
     private RecyclerDialogAdapter adapter;
     private List<TeamModel> penddingTeams;
-    private static Dialog myDialog;
     // this method create view for your Dialog
-
 
     public static DialogJoin newInstance(List<TeamModel> penddingTeams) {
         DialogJoin f = new DialogJoin();
         // Supply num input as an argument.
         f.setPenddingTeams(penddingTeams);
         return f;
+    }
+
+    public static Dialog getMyDialog() {
+        return myDialog;
     }
 
     public void setPenddingTeams(List<TeamModel> movies) {
@@ -60,10 +62,6 @@ public class DialogJoin extends DialogFragment {
 
         //get your recycler view and populate it.
         myDialog = alertDialogBuilder.create();
-        return myDialog;
-    }
-
-    public static Dialog getMyDialog() {
         return myDialog;
     }
 }

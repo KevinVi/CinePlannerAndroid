@@ -1,10 +1,9 @@
 package com.cineplanner.kevin.cineplanner;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.cineplanner.kevin.cineplanner.login.LoginActivity;
 import com.cineplanner.kevin.cineplanner.login.LoginInterface;
@@ -24,9 +23,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private final int TIME_LOADER = 2000;
     private final int TIME_LOADER_FAIL = 5000;
-    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

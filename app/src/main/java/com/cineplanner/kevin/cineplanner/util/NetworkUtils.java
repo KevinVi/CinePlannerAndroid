@@ -1,18 +1,12 @@
 package com.cineplanner.kevin.cineplanner.util;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
-import com.cineplanner.kevin.cineplanner.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
-import com.cineplanner.kevin.cineplanner.login.LoginActivity;
-import com.cineplanner.kevin.cineplanner.login.LoginInterface;
-import com.cineplanner.kevin.cineplanner.login.LoginModel;
-import com.cineplanner.kevin.cineplanner.login.LoginTools;
-import com.ncornette.cache.OkCacheControl;
+import com.jakewharton.disklrucache.DiskLruCache;
 
 import java.io.File;
 import java.io.FilterInputStream;
@@ -20,21 +14,13 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.Route;
-
-import com.jakewharton.disklrucache.DiskLruCache;
-
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Kevin on 22/09/2017 for CinePlanner.
@@ -51,7 +37,6 @@ public class NetworkUtils {
             return false;
         }
     }
-
 
 
     /**

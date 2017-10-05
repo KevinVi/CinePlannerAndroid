@@ -19,18 +19,21 @@ import java.util.List;
  */
 
 public class DialogMovie extends DialogFragment {
+    private static Dialog myDialog;
     private RecyclerView mRecyclerView;
     private RecyclerDialogAdapter adapter;
     private List<MovieModel> movies;
-    private static Dialog myDialog;
     // this method create view for your Dialog
-
 
     public static DialogMovie newInstance(List<MovieModel> movies) {
         DialogMovie f = new DialogMovie();
         // Supply num input as an argument.
         f.setMovies(movies);
         return f;
+    }
+
+    public static Dialog getMyDialog() {
+        return myDialog;
     }
 
     public void setMovies(List<MovieModel> movies) {
@@ -55,10 +58,6 @@ public class DialogMovie extends DialogFragment {
 
         //get your recycler view and populate it.
         myDialog = alertDialogBuilder.create();
-        return myDialog;
-    }
-
-    public static Dialog getMyDialog() {
         return myDialog;
     }
 }

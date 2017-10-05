@@ -31,10 +31,10 @@ public interface EndpointInterface {
     Call<List<TeamModel>> getPending(@Header("token") String login);
 
     @POST("invite")
-    Call<Boolean> invite(@Header("token") String login,@Body JsonObject invite);
+    Call<Boolean> invite(@Header("token") String login, @Body JsonObject invite);
 
     @POST("join")
-    Call<Boolean> join(@Header("token") String login,@Body JsonObject invite);
+    Call<Boolean> join(@Header("token") String login, @Body JsonObject invite);
 
     @Headers("Content-Type: application/json")
     @POST("event/create")

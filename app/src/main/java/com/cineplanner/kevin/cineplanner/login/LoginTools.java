@@ -52,7 +52,6 @@ public class LoginTools {
     }
 
 
-
     /**
      * Save user password and logn in sharedPreferences.
      *

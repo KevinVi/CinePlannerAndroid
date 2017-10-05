@@ -4,8 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
@@ -19,11 +19,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.cineplanner.kevin.cineplanner.BoxLoading;
+import com.cineplanner.kevin.cineplanner.util.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
-import com.cineplanner.kevin.cineplanner.CommentActivity;
+import com.cineplanner.kevin.cineplanner.comment.CommentActivity;
 import com.cineplanner.kevin.cineplanner.R;
-import com.cineplanner.kevin.cineplanner.login.LoginActivity;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
 import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
@@ -47,14 +46,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.cineplanner.kevin.cineplanner.CommentActivity.COMMENTS;
-import static com.cineplanner.kevin.cineplanner.CommentActivity.EVENTID;
+import static com.cineplanner.kevin.cineplanner.comment.CommentActivity.COMMENTS;
+import static com.cineplanner.kevin.cineplanner.comment.CommentActivity.EVENTID;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 public class EventDetailActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+    private static final String TAG = "EventDetailActivity";
     public static String EVENT = "event";
     public static String TEAM = "team";
     public static String NAMETEAM = "nameTeam";
+    public static AppCompatEditText movie;
+    public static MovieModel movieSelected;
+    Calendar cal;
+    Calendar cal2;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     private AppCompatEditText name;
     private AppCompatTextView startDate;
     private AppCompatTextView startHour;
@@ -69,7 +74,6 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     private RatingBar teamRating;
     private AppCompatImageView imageView;
     private AppCompatImageButton search;
-    public static AppCompatEditText movie;
     private int day;
     private int month;
     private int year;
@@ -78,12 +82,6 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
     private EventModel eventModel;
     private long id;
     private DatePickerDialog datePickerDialog;
-    Calendar cal;
-    Calendar cal2;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-    private static final String TAG = "EventDetailActivity";
-    public static MovieModel movieSelected;
-
 
     public static void setMovieSelected(MovieModel movieSelected) {
         EventDetailActivity.movieSelected = movieSelected;
@@ -437,12 +435,20 @@ public class EventDetailActivity extends AppCompatActivity implements View.OnCli
                             myRating.setIsIndicator(true);
                             //recalcule
                             float rate = myRating.getRating();
+                            Log.d(TAG, "onResponse:rate " + rate);
+                            Log.d(TAG, "onResponse:rate " + eventModel.getNotations());
                             for (NotationModel n :
                                     eventModel.getNotations()) {
                                 rate += n.getNotation();
                             }
-                            rate = rate / eventModel.getNotations().size();
-                            teamRating.setRating(rate);
+                            Log.d(TAG, "onResponse:rate " + rate);
+                            Log.d(TAG, "onResponse:rate " + eventModel.getNotations().size());
+                            if (eventModel.getNotations().size() == 0){
+                                teamRating.setRating(rate);
+                            }else {
+                                rate = rate / eventModel.getNotations().size();
+                                teamRating.setRating(rate);
+                            }
                             eventModel.getNotations().add(response.body());
 
                         } else {

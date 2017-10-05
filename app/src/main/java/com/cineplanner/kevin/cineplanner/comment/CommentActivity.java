@@ -1,4 +1,4 @@
-package com.cineplanner.kevin.cineplanner;
+package com.cineplanner.kevin.cineplanner.comment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.cineplanner.kevin.cineplanner.util.BoxLoading;
+import com.cineplanner.kevin.cineplanner.BuildConfig;
+import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
 import com.cineplanner.kevin.cineplanner.team.CommentModel;
@@ -43,21 +46,19 @@ import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgres
 public class CommentActivity extends AppCompatActivity {
 
 
-    AppCompatAutoCompleteTextView textIn;
-    private BoxLoading alert;
-    AppCompatButton add;
+    private static final String TAG = "CommentActivity";
     public static String COMMENTS = "comments";
     public static String EVENTID = "eventid";
-    private static final String TAG = "CommentActivity";
-
+    AppCompatAutoCompleteTextView textIn;
+    AppCompatButton add;
     List<String> invit = new ArrayList<>();
     List<String> oldComments = new ArrayList<>();
     ArrayList<CommentModel> commentModels = new ArrayList<>();
     LinearLayoutCompat container;
-    private long eventId;
-
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     ArrayAdapter<String> adapter;
+    private BoxLoading alert;
+    private long eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

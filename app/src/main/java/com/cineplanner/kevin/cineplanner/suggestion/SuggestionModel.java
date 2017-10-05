@@ -5,7 +5,7 @@ package com.cineplanner.kevin.cineplanner.suggestion;
  */
 
 public class SuggestionModel {
-    int idTeam ;
+    int idTeam;
     int idMovie;
     boolean liked;
 

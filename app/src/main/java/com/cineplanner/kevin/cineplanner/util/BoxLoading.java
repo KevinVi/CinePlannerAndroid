@@ -1,4 +1,4 @@
-package com.cineplanner.kevin.cineplanner;
+package com.cineplanner.kevin.cineplanner.util;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -10,6 +10,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.cineplanner.kevin.cineplanner.R;
 
 /**
  * Created by Kevin on 25/09/2017 for CinePlanner.

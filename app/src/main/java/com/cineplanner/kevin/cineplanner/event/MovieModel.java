@@ -11,49 +11,39 @@ import java.io.Serializable;
 
 public class MovieModel implements Serializable {
 
-    @SerializedName("id")
-    @Expose
-    private int id;
-
     @SerializedName("vote_count")
     @Expose
     float vote_count;
-
     @SerializedName("vote_average")
     @Expose
     float vote_average;
-
     @SerializedName("title")
     @Expose
     String title;
-
     @SerializedName("popularity")
     @Expose
     float popularity;
-
     @SerializedName("poster_path")
     @Expose
     String poster_path;
-
     @SerializedName("original_language")
     @Expose
     String original_language;
-
     @SerializedName("original_title")
     @Expose
     String original_title;
-
     @SerializedName("backdrop_path")
     @Expose
     String backdrop_path;
-
     @SerializedName("overview")
     @Expose
     String overview;
-
     @SerializedName("release_date")
     @Expose
     String release_date;
+    @SerializedName("id")
+    @Expose
+    private int id;
 
     @Override
     public boolean equals(Object o) {

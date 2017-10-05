@@ -1,12 +1,10 @@
 package com.cineplanner.kevin.cineplanner.planning;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatButton;
@@ -20,50 +18,36 @@ import android.widget.Toast;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.anupcowkur.reservoir.Reservoir;
-import com.cineplanner.kevin.cineplanner.BoxLoading;
+import com.cineplanner.kevin.cineplanner.util.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
-import com.cineplanner.kevin.cineplanner.CachingControlInterceptor;
-import com.cineplanner.kevin.cineplanner.InviteDialogFragment;
-import com.cineplanner.kevin.cineplanner.MyDialogFragment;
+import com.cineplanner.kevin.cineplanner.invite.InviteDialogFragment;
+import com.cineplanner.kevin.cineplanner.team.MyDialogFragment;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.EventActivity;
 import com.cineplanner.kevin.cineplanner.event.EventDetailActivity;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
-import com.cineplanner.kevin.cineplanner.invite.InviteActivity;
 import com.cineplanner.kevin.cineplanner.join.DialogJoin;
 import com.cineplanner.kevin.cineplanner.login.LoginActivity;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
-import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.suggeestionDisplay.DialogLearningDisplay;
 import com.cineplanner.kevin.cineplanner.suggestion.DialogLearning;
-import com.cineplanner.kevin.cineplanner.suggestion.SuggestionModel;
 import com.cineplanner.kevin.cineplanner.team.EventModel;
 import com.cineplanner.kevin.cineplanner.team.TeamModel;
 import com.cineplanner.kevin.cineplanner.util.NetworkUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.Streams;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import okhttp3.Cache;
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,7 +60,6 @@ import static com.cineplanner.kevin.cineplanner.event.EventActivity.TEAM;
 import static com.cineplanner.kevin.cineplanner.event.EventActivity.YEAR;
 import static com.cineplanner.kevin.cineplanner.event.EventDetailActivity.EVENT;
 import static com.cineplanner.kevin.cineplanner.event.EventDetailActivity.NAMETEAM;
-import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.getCacheFileSize;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.isOnline;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
@@ -84,9 +67,10 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
 
     private static final String TAG = "PlanningActivity";
     public static ListView mDrawerList;
-
-    private AppCompatButton addTeam;
     public static AppCompatButton joinTeam;
+    public static List<TeamModel> myTeams = new ArrayList<>();
+    public static List<TeamModel> pendingTeams = new ArrayList<>();
+    private AppCompatButton addTeam;
     private AppCompatButton logout;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -100,8 +84,6 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
     private List<EventModel> currentEvents = new ArrayList<>();
-    public static List<TeamModel> myTeams = new ArrayList<>();
-    public static List<TeamModel> pendingTeams = new ArrayList<>();
     private BoxLoading alert;
 
 
@@ -323,15 +305,11 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                Log.d(TAG, "onClick: " + mDrawerList.getCheckedItemPosition());
                 if (mDrawerList.getCheckedItemPosition() >= 0) {
 
                     LoginTools.setSelectedTeam(getApplicationContext(), mDrawerList.getCheckedItemPosition());
 
                     events = new ArrayList<>();
-                    Log.d(TAG, "onDrawerClosed: " + LoginTools.getSelectedTeam(getApplicationContext()));
-                    Log.d(TAG, "onDrawerClosed: " + myTeams.get(LoginTools.getSelectedTeam(getApplicationContext())).getId());
-                    Log.d(TAG, "onDrawerClosed: " + myTeams.get(LoginTools.getSelectedTeam(getApplicationContext())).getEvents());
                     for (EventModel ev :
                             myTeams.get(LoginTools.getSelectedTeam(getApplicationContext())).getEvents()) {
                         currentEvents.add(ev);
@@ -656,9 +634,6 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                     eventMap.put(event.getId(), event);
                 }
             }
-        } else if (requestCode == 4) {
-
-
         }
     }
 

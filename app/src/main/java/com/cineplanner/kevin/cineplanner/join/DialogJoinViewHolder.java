@@ -1,21 +1,15 @@
 package com.cineplanner.kevin.cineplanner.join;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.cineplanner.kevin.cineplanner.BuildConfig;
 import com.cineplanner.kevin.cineplanner.R;
-import com.cineplanner.kevin.cineplanner.event.EventActivity;
-import com.cineplanner.kevin.cineplanner.event.EventDetailActivity;
-import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
-import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
 import com.cineplanner.kevin.cineplanner.team.TeamModel;
 import com.google.gson.JsonObject;
@@ -41,9 +35,9 @@ import static com.cineplanner.kevin.cineplanner.planning.PlanningActivity.pendin
  */
 
 public class DialogJoinViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static final String TAG = "DialogViewHolder";
     private final AppCompatTextView teamName;
     private final AppCompatTextView teamCreator;
-    private static final String TAG = "DialogViewHolder";
 
 
     public DialogJoinViewHolder(View itemView) {

@@ -11,21 +11,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.cineplanner.kevin.cineplanner.BoxLoading;
+import com.cineplanner.kevin.cineplanner.util.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
-import com.cineplanner.kevin.cineplanner.login.AccountModel;
-import com.cineplanner.kevin.cineplanner.login.LoginInterface;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
 import com.cineplanner.kevin.cineplanner.movie.RecyclerDialogAdapter;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +33,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.cineplanner.kevin.cineplanner.login.LoginActivity.getToken;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 /**
@@ -46,13 +41,13 @@ import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgres
 
 public class DialogLearning extends DialogFragment {
 
+    private static final String TAG = "DialogLearning";
+    public static HashMap<Integer, SuggestionModel> suggestionModels = new HashMap<>();
+    private static Dialog myDialog;
     private RecyclerView mRecyclerView;
     private RecyclerDialogAdapter adapter;
-    private static final String TAG = "DialogLearning";
     private List<MovieModel> movieLearning;
-    private static Dialog myDialog;
     private BoxLoading alert;
-    public static HashMap<Integer, SuggestionModel> suggestionModels = new HashMap<>();
     private int teamId;
     // this method create view for your Dialog
 
@@ -63,6 +58,10 @@ public class DialogLearning extends DialogFragment {
         f.setMovieLearning(movieLearning);
         f.setTeamId(teamId);
         return f;
+    }
+
+    public static Dialog getMyDialog() {
+        return myDialog;
     }
 
     public void setMovieLearning(List<MovieModel> movieLearning) {
@@ -144,10 +143,6 @@ public class DialogLearning extends DialogFragment {
 
         //get your recycler view and populate it.
         myDialog = alertDialogBuilder.create();
-        return myDialog;
-    }
-
-    public static Dialog getMyDialog() {
         return myDialog;
     }
 }

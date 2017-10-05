@@ -10,9 +10,7 @@ import android.widget.CompoundButton;
 import com.bumptech.glide.Glide;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
-import com.cineplanner.kevin.cineplanner.join.DialogJoinViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.cineplanner.kevin.cineplanner.suggestion.DialogLearning.suggestionModels;

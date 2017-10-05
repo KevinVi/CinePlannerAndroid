@@ -16,11 +16,11 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.cineplanner.kevin.cineplanner.BoxLoading;
+import com.cineplanner.kevin.cineplanner.util.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
-import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
+import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
 import com.cineplanner.kevin.cineplanner.team.EventModel;
 import com.cineplanner.kevin.cineplanner.util.NetworkUtils;
@@ -28,7 +28,6 @@ import com.google.gson.JsonObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -42,13 +41,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgress;
 
 public class EventActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+    private static final String TAG = "EventActivity";
     public static String DAY = "day";
     public static String MONTH = "month";
     public static String YEAR = "year";
     public static String MOVIE = "movie";
     public static String TEAM = "team";
-    private AppCompatEditText name;
     public static AppCompatEditText movie;
+    public static MovieModel movieSelected;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+    private AppCompatEditText name;
     private AppCompatTextView startDate;
     private AppCompatTextView startHour;
     private AppCompatTextView endDate;
@@ -61,11 +63,7 @@ public class EventActivity extends AppCompatActivity implements View.OnClickList
     private long id;
     private BoxLoading alert;
     private MovieModel movieModel;
-    private static final String TAG = "EventActivity";
     private DatePickerDialog datePickerDialog;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-
-    public static MovieModel movieSelected;
 
     public static void setMovieSelected(MovieModel movieSelected) {
         EventActivity.movieSelected = movieSelected;

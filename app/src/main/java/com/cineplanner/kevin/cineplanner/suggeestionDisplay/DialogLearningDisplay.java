@@ -10,30 +10,20 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.cineplanner.kevin.cineplanner.BoxLoading;
+import com.cineplanner.kevin.cineplanner.util.BoxLoading;
 import com.cineplanner.kevin.cineplanner.BuildConfig;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.EventActivity;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import com.cineplanner.kevin.cineplanner.login.LoginTools;
-import com.cineplanner.kevin.cineplanner.movie.DialogMovie;
-import com.cineplanner.kevin.cineplanner.movie.RecyclerDialogAdapter;
 import com.cineplanner.kevin.cineplanner.planning.EndpointInterface;
 import com.cineplanner.kevin.cineplanner.planning.PlanningActivity;
-import com.cineplanner.kevin.cineplanner.suggestion.SuggestionModel;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -53,9 +43,9 @@ import static com.cineplanner.kevin.cineplanner.util.NetworkUtils.setUiInProgres
  */
 
 public class DialogLearningDisplay extends DialogFragment {
-    private MovieModel movie;
     private static final String TAG = "DialogLearningDisplay";
     private static Dialog myDialog;
+    private MovieModel movie;
     private BoxLoading alert;
     private int teamId;
     private PlanningActivity activity;

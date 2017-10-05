@@ -1,6 +1,5 @@
 package com.cineplanner.kevin.cineplanner.suggestion;
 
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +15,11 @@ import com.cineplanner.kevin.cineplanner.R;
 public class DialogLearningViewHolder extends RecyclerView.ViewHolder {
 
 
+    private static final String TAG = "DialogViewHolder";
     private final AppCompatImageView imgSug;
     private final AppCompatTextView titleSug;
     private final AppCompatTextView descSug;
     private final SwitchCompat sugOk;
-    private static final String TAG = "DialogViewHolder";
 
     public DialogLearningViewHolder(View itemView) {
         super(itemView);

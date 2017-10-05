@@ -1,15 +1,12 @@
 package com.cineplanner.kevin.cineplanner.team;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 
 import com.alamkanak.weekview.WeekViewEvent;
 import com.cineplanner.kevin.cineplanner.R;
 import com.cineplanner.kevin.cineplanner.event.MovieModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import org.w3c.dom.Comment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -77,6 +74,10 @@ public class EventModel implements Serializable {
         return movie;
     }
 
+    public void setMovie(MovieModel movie) {
+        this.movie = movie;
+    }
+
     public int getCreatorId() {
         return creatorId;
     }
@@ -85,20 +86,16 @@ public class EventModel implements Serializable {
         return comments;
     }
 
-    public ArrayList<NotationModel> getNotations() {
-        return notations;
-    }
-
     public void setComments(ArrayList<CommentModel> comments) {
         this.comments = comments;
     }
 
-    public void setNotations(ArrayList<NotationModel> notations) {
-        this.notations = notations;
+    public ArrayList<NotationModel> getNotations() {
+        return notations;
     }
 
-    public void setMovie(MovieModel movie) {
-        this.movie = movie;
+    public void setNotations(ArrayList<NotationModel> notations) {
+        this.notations = notations;
     }
 
     @Override
