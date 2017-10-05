@@ -168,11 +168,9 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                         Call<List<MovieModel>> call = endpointInterface.learning(LoginTools.getToken(getApplicationContext()), jsonObject);
                         call.enqueue(new Callback<List<MovieModel>>() {
                             @Override
-                            public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
+                            public void onResponse(@NonNull Call<List<MovieModel>> call, @NonNull Response<List<MovieModel>> response) {
                                 Log.d(TAG, "onResponse: " + response);
                                 if (response.isSuccessful()) {
-                                    Log.d(TAG, "onResponse:res  " + response.body().toString());
-                                    Log.d(TAG, "onResponse:res size " + response.body().size());
                                     DialogLearning dFragment = DialogLearning.newInstance(response.body(), (int) myTeams.get(mDrawerList.getCheckedItemPosition()).getId());
 
                                     dFragment.show(getSupportFragmentManager(), "DialogLearning");
@@ -185,7 +183,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
                             }
 
                             @Override
-                            public void onFailure(Call<List<MovieModel>> call, Throwable t) {
+                            public void onFailure(@NonNull Call<List<MovieModel>> call, @NonNull Throwable t) {
                                 Log.d(TAG, "onFailure: " + t.getMessage());
                                 setUiInProgress(getSupportFragmentManager(), alert, false);
 
@@ -235,7 +233,6 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
 
                 if (mDrawerList.getCheckedItemPosition() >= 0) {
                     if (NetworkUtils.isOnline(getApplicationContext())) {
-                        Toast.makeText(PlanningActivity.this, "event" + getWeekView().getFirstVisibleDay().get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), EventActivity.class);
                         intent.putExtra(MONTH, getWeekView().getFirstVisibleDay().get(Calendar.MONTH));
                         intent.putExtra(DAY, getWeekView().getFirstVisibleDay().get(Calendar.DAY_OF_MONTH));
@@ -350,7 +347,7 @@ public class PlanningActivity extends AbstractPlanning implements WeekView.Event
         Call<MovieModel> call = endpointInterface.learningSuggestion(LoginTools.getToken(getApplicationContext()), jsonObject);
         call.enqueue(new Callback<MovieModel>() {
             @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+            public void onResponse(@NonNull Call<MovieModel> call, @NonNull Response<MovieModel> response) {
                 Log.d(TAG, "onResponse: " + response);
                 if (response.isSuccessful()) {
                     Log.d(TAG, "onResponse:res  " + response.body().toString());

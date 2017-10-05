@@ -51,7 +51,6 @@ public class CommentActivity extends AppCompatActivity {
     public static String EVENTID = "eventid";
     AppCompatAutoCompleteTextView textIn;
     AppCompatButton add;
-    List<String> invit = new ArrayList<>();
     List<String> oldComments = new ArrayList<>();
     ArrayList<CommentModel> commentModels = new ArrayList<>();
     LinearLayoutCompat container;
@@ -125,7 +124,6 @@ public class CommentActivity extends AppCompatActivity {
                         public void onResponse(@NonNull Call<CommentModel> call, @NonNull Response<CommentModel> response) {
                             Log.d(TAG, "onResponse: " + response);
                             if (response.isSuccessful()) {
-                                Log.d(TAG, "onResponse: " + response.body().toString());
                                 setUiInProgress(getSupportFragmentManager(), alert, false);
 
 
@@ -137,7 +135,6 @@ public class CommentActivity extends AppCompatActivity {
                                 AutoCompleteTextView comment = addView.findViewById(R.id.comment);
                                 AppCompatTextView creator = addView.findViewById(R.id.creator_comment);
                                 AppCompatTextView cate = addView.findViewById(R.id.date_comment);
-//            comment.setAdapter(adapter);
                                 comment.setText(com.getComment());
                                 creator.setText(com.getAuthor());
 
